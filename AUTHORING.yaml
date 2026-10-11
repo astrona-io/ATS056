@@ -1,0 +1,61 @@
+version: 1
+approval: CCA requested 2026-10-11; established reading-only scope
+course:
+  id: ATS056
+  certification:
+    name: Cilium Certified Associate
+    code: CCA
+    provider: CNCF / Linux Foundation
+    domain: Installation and Configuration
+    weight: 10
+    competencies:
+    - Know How to Use Cilium CLI to Query and Modify the Configuration
+    - Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: false
+  final_quiz: true
+assessment_format: YAML question banks v1, registered in assessments/index.yaml
+sections:
+- id: section-010
+  title: Know How to Use Cilium CLI to Query and Modify the Configuration
+  curriculum_item: Know How to Use Cilium CLI to Query and Modify the Configuration
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Cilium CLI Configuration, Context And Effective State
+    objectives:
+    - Distinguish remote cluster management from local agent debugging.
+    - Explain kubeconfig context and required API permissions.
+    - Compare desired configuration, rollout and effective node state.
+    - Evaluate version-compatible changes and durable ownership.
+    outline:
+    - Cilium CLI Configuration, Context And Effective State
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
+      adapted_from: null
+- id: section-020
+  title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status
+  curriculum_item: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status
+  capstone: false
+  section_quiz: false
+  modules:
+  - id: module-01
+    title: Installation Prerequisites And Connectivity Evidence
+    objectives:
+    - Identify kernel, runtime, networking and API prerequisites.
+    - Explain installation and component readiness separately.
+    - Interpret connectivity-test coverage and environmental effects.
+    - Distinguish monitoring status from useful application communication.
+    outline:
+    - Installation Prerequisites And Connectivity Evidence
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
+      adapted_from: null
