@@ -34,7 +34,7 @@ modules:
   title: Know How to Use Cilium CLI to Query and Modify the Configuration
   description: Developed reading and reasoning for Know How to Use Cilium CLI to Query
     and Modify the Configuration.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Know How to Use Cilium CLI to Query and Modify the Configuration
@@ -74,7 +74,7 @@ modules:
     Status
   description: Developed reading and reasoning for Using Cilium CLI to Install Cilium,
     Run Connectivity Tests, and Monitor its Status.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor
