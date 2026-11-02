@@ -1,0 +1,129 @@
+schema_version: 1
+kind: question_bank
+id: ats056-domain-review
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: Installation and Configuration
+placement:
+  position: after
+  reading: sections/section-020/module-01/course-02-summary.md
+questions:
+- id: ats056-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish remote cluster management from local agent debugging.
+  source_readings:
+  - sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
+  prompt: What identifies the remote CLI's target cluster?
+  options:
+  - id: a
+    text: Its Kubernetes access context and configuration.
+    explanation: The command acts through that access path.
+  - id: b
+    text: Only the current browser tab title.
+    explanation: The browser does not select kubeconfig context.
+  - id: c
+    text: Every cluster in the account automatically.
+    explanation: Operations have an intended target.
+  correct_option: a
+  explanation: The command acts through that access path.
+- id: ats056-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare desired configuration, rollout and effective node state.
+  source_readings:
+  - sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
+  prompt: Does changing desired configuration prove every agent uses it?
+  options:
+  - id: a
+    text: Yes; stored values instantly rewrite all processes.
+    explanation: Components need supported update behavior.
+  - id: b
+    text: Yes; every existing connection is recreated automatically.
+    explanation: Changes can have varied lifecycle effects.
+  - id: c
+    text: No; rollout and realization must be established.
+    explanation: Desired and effective state differ.
+  correct_option: c
+  explanation: Desired and effective state differ.
+- id: ats056-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Evaluate version-compatible changes and durable ownership.
+  source_readings:
+  - sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
+  prompt: Why identify the durable configuration owner?
+  options:
+  - id: a
+    text: It guarantees every feature supports live changes.
+    explanation: Feature lifecycle depends on its contract.
+  - id: b
+    text: An untracked manual edit can be overwritten by the managed release.
+    explanation: Ownership preserves intended state.
+  - id: c
+    text: It removes all permission requirements.
+    explanation: Management operations still need authority.
+  correct_option: b
+  explanation: Ownership preserves intended state.
+- id: ats056-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify kernel, runtime, networking and API prerequisites.
+  source_readings:
+  - sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
+  prompt: Does creating Cilium resources prove the kernel supports every enabled feature?
+  options:
+  - id: a
+    text: No; host prerequisites need separate confirmation.
+    explanation: Stored resources cannot supply missing kernel capabilities.
+  - id: b
+    text: Yes; Kubernetes replaces every kernel automatically.
+    explanation: Installation does not universally perform that operation.
+  - id: c
+    text: Yes; the metrics endpoint grants kernel features.
+    explanation: Observation has no such authority.
+  correct_option: a
+  explanation: Stored resources cannot supply missing kernel capabilities.
+- id: ats056-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret connectivity-test coverage and environmental effects.
+  source_readings:
+  - sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
+  prompt: What does a connectivity test establish?
+  options:
+  - id: a
+    text: Proof that every future production request succeeds.
+    explanation: Applications and paths can differ.
+  - id: b
+    text: A permanent absence of all policy defects.
+    explanation: Tests cover selected conditions.
+  - id: c
+    text: Results for its configured scenarios and observed environment.
+    explanation: Its coverage is bounded.
+  correct_option: c
+  explanation: Its coverage is bounded.
+- id: ats056-domain-review-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish monitoring status from useful application communication.
+  source_readings:
+  - sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
+  prompt: Why distinguish component readiness from application success?
+  options:
+  - id: a
+    text: Status checks automatically rewrite application code.
+    explanation: They observe rather than implement business correctness.
+  - id: b
+    text: A healthy installation can coexist with incorrect Service or application configuration.
+    explanation: Responsibilities remain separate.
+  - id: c
+    text: Every Ready Pod must authenticate every user.
+    explanation: Readiness does not grant business permission.
+  correct_option: b
+  explanation: Responsibilities remain separate.
