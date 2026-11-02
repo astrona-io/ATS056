@@ -1,9 +1,8 @@
-# Reading-only content; YAML knowledge checks have a separate index.
 training:
   id: ATS056
   title: 'CCA: Installation and Configuration'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CCA: Installation and
-    Configuration. Technical content remains draft. No labs or playgrounds.'
+  description: 'Detailed reading material and reusable YAML knowledge checks for CCA:
+    Installation and Configuration. Technical content remains draft. Private playgrounds and draft independent labs are included.'
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -12,7 +11,8 @@ training:
     weight: 10
     competencies:
     - Know How to Use Cilium CLI to Query and Modify the Configuration
-    - Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status
+    - Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its
+      Status
 modules:
 - id: module-intro
   title: Introduction
@@ -32,9 +32,9 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Know How to Use Cilium CLI to Query and Modify the Configuration
-  description: Developed reading and reasoning for Know How to Use Cilium CLI to Query and Modify the
-    Configuration.
-  draft: true
+  description: Developed reading and reasoning for Know How to Use Cilium CLI to Query
+    and Modify the Configuration.
+  status: alpha
   content:
   - type: reading
     title: Know How to Use Cilium CLI to Query and Modify the Configuration
@@ -46,16 +46,39 @@ modules:
     title: Cilium CLI Configuration, Context And Effective State
     path: sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
   - type: reading
+    title: Read Effective Agent Configuration — Task
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Read Effective Agent Configuration
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Read the effective IPAM, routing and policy settings.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Read Effective Agent Configuration — Solution
+    path: sections/section-010/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Read Effective Agent Configuration'
+    path: sections/section-010/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-02-summary.md
+    path: sections/section-010/module-01/course-03-summary.md
 - id: module-020
-  title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status
-  description: Developed reading and reasoning for Using Cilium CLI to Install Cilium, Run Connectivity
-    Tests, and Monitor its Status.
-  draft: true
+  title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its
+    Status
+  description: Developed reading and reasoning for Using Cilium CLI to Install Cilium,
+    Run Connectivity Tests, and Monitor its Status.
+  status: alpha
   content:
   - type: reading
-    title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status
+    title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor
+      its Status
     path: sections/section-020/README.md
   - type: reading
     title: Installation Prerequisites And Connectivity Evidence
@@ -64,5 +87,26 @@ modules:
     title: Installation Prerequisites And Connectivity Evidence
     path: sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
   - type: reading
+    title: Separate Ready Agents From Working Connectivity — Task
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Separate Ready Agents From Working Connectivity
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cilium-diagnostics
+    task_kind: build
+    learning_goals:
+    - Establish both deployment health and a successful service request.
+    tags:
+    - cca
+    - cilium-diagnostics
+  - type: reading
+    title: Separate Ready Agents From Working Connectivity — Solution
+    path: sections/section-020/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Separate Ready Agents From Working Connectivity'
+    path: sections/section-020/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
+    path: sections/section-020/module-01/course-03-summary.md
