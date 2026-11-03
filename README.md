@@ -10,27 +10,31 @@ The course teaches the Cilium command-line tool: reading and changing the config
 | --- | --- | --- |
 | 010 / 01 | Query The Cilium Configuration | Where The Configuration Lives; Effective State And Features; Context, Permissions And Evidence |
 | 010 / 02 | Modify The Cilium Configuration | What cilium config set Does; Deleting Keys And Controlling The Restart; Who Owns The Setting |
+| 010 / 03 | Core Datapath Settings Of Cilium | IPAM Modes; Routing Mode And Tunnels; Kube-Proxy Replacement; Policy Enforcement And Safe Changes |
 | 020 / 01 | Install Cilium With The CLI | Prerequisites And What Gets Installed; Install Options And Values; Verify, Upgrade And Uninstall |
 | 020 / 02 | Run Cilium Connectivity Tests | What The Test Deploys And Checks; Selecting And Scoping A Run; Flow Validation And Failures |
 | 020 / 03 | Monitor The Status Of Cilium | Reading cilium status; Agent Status And Workload Health; Hubble, Relay And Evidence |
+| 020 / 04 | Install And Upgrade Cilium With Helm | Repository, Chart And Release; Values And Their Precedence; Upgrade, History And Rollback; Helm And The Cilium CLI |
 
 ## Hands-On Coverage
 
-This course has 5 ungraded playgrounds, 5 module labs and 2 section capstones. Labs sit right after the part they practise.
+This course has 7 ungraded playgrounds, 7 module labs and 2 section capstones. Labs sit right after the part they practise.
 
 | Module | Playground | Lab | Lab placement |
 | --- | --- | --- | --- |
 | 010/01 Query The Cilium Configuration | ats-056-pg-010-01 | Report The Effective Cilium Configuration | after part 1 |
 | 010/02 Modify The Cilium Configuration | ats-056-pg-010-02 | Change A Cilium Setting With The CLI | after part 1 |
+| 010/03 Core Datapath Settings Of Cilium | ats-056-pg-010-03 | Report And Change Datapath Settings | after part 2 |
 | 010 capstone | none | Query And Modify The Cilium Configuration Capstone | end of section |
 | 020/01 Install Cilium With The CLI | ats-056-pg-020-01 | Install Cilium With The CLI | after part 3 |
 | 020/02 Run Cilium Connectivity Tests | ats-056-pg-020-02 | Run A Scoped Connectivity Test | after part 2 |
 | 020/03 Monitor The Status Of Cilium | ats-056-pg-020-03 | Find And Repair Stopped Cilium Components | after part 2 |
+| 020/04 Install And Upgrade Cilium With Helm | ats-056-pg-020-04 | Upgrade A Cilium Helm Release | after part 2 |
 | 020 capstone | none | Install Cilium, Test It And Monitor It Capstone | end of section |
 
 ## Knowledge Checks
 
-Each section has a `quiz.yaml` (`sections/section-010/quiz.yaml`, `sections/section-020/quiz.yaml`) and the course has `sections/final-domain-quiz.yaml`. The pass score is 70.
+Each module added in this revision has its own `quiz.yaml`. Each section has a `quiz.yaml` (`sections/section-010/quiz.yaml`, `sections/section-020/quiz.yaml`) and the course has `sections/final-domain-quiz.yaml`. The pass score is 70.
 
 ## Author Review
 

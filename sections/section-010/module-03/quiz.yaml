@@ -1,0 +1,243 @@
+# Knowledge check for section 010 module 03. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats056-010-m03
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-03
+  title: "Core Datapath Settings Of Cilium"
+questions:
+  - id: ats056-010-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Say who allocates node ranges in cluster pool mode"
+    source_readings:
+      - sections/section-010/module-03/course-01-ipam-modes.md
+    prompt: "In a cluster that uses the `cluster-pool` IPAM mode, which component splits the cluster-wide range into one range for each node?"
+    options:
+      - id: a
+        text: "The Kubernetes controller manager."
+        explanation: "Not correct. The controller manager fills node.spec.podCIDR, which only the kubernetes IPAM mode uses."
+      - id: b
+        text: "The Cilium agent on each node."
+        explanation: "Not correct. The agent hands out single addresses from a range it already has. It does not create the node range."
+      - id: c
+        text: "The Cilium operator."
+        explanation: "Correct. The operator splits the pool and writes the result into the CiliumNode resource of each node."
+      - id: d
+        text: "The kubelet."
+        explanation: "Not correct. The kubelet starts pods and asks the network plugin for an address. It does not allocate ranges."
+    correct_option: c
+    explanation: "In cluster pool mode the operator owns the ranges and records them in the CiliumNode resources."
+
+  - id: ats056-010-m03-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Map a Helm value to its cilium-config key"
+    source_readings:
+      - sections/section-010/module-03/course-01-ipam-modes.md
+    prompt: "Which key of the ConfigMap `cilium-config` holds the IPAM mode that the Helm value `ipam.mode` renders?"
+    options:
+      - id: a
+        text: "`ipam`"
+        explanation: "Correct. The chart renders ipam.mode into the key named ipam."
+      - id: b
+        text: "`ipam-mode`"
+        explanation: "Not correct. No key with this name exists in the chart output. The key has the short name ipam."
+      - id: c
+        text: "`cluster-pool-mode`"
+        explanation: "Not correct. This looks like a mode name, but it is a value and not a key."
+      - id: d
+        text: "`enable-ipam`"
+        explanation: "Not correct. IPAM is always on. There is no key that enables it."
+    correct_option: a
+    explanation: "The Helm value ipam.mode becomes the key ipam in cilium-config."
+
+  - id: ats056-010-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the kubernetes IPAM mode"
+    source_readings:
+      - sections/section-010/module-03/course-01-ipam-modes.md
+    prompt: "A cluster runs in `kubernetes` IPAM mode. Where does the range of a node come from?"
+    options:
+      - id: a
+        text: "From the Helm value `ipam.operator.clusterPoolIPv4PodCIDRList`."
+        explanation: "Not correct. That list is used only in cluster pool mode."
+      - id: b
+        text: "From `node.spec.podCIDR`, which Kubernetes assigned to the node."
+        explanation: "Correct. In kubernetes mode Cilium reads the range that the Kubernetes controller manager allocated."
+      - id: c
+        text: "From the agent, which picks a free range at random."
+        explanation: "Not correct. Agents never pick a node range on their own. Overlaps would break routing."
+      - id: d
+        text: "From the node network DHCP server."
+        explanation: "Not correct. DHCP gives addresses to nodes, not pod ranges."
+    correct_option: b
+    explanation: "The kubernetes mode reuses the Kubernetes node range, so the range is visible in the node object."
+
+  - id: ats056-010-m03-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Diagnose a full node range"
+    source_readings:
+      - sections/section-010/module-03/course-01-ipam-modes.md
+    prompt: "A pod stays in `ContainerCreating` and the events say that no IP address is available. Which check is the best first step?"
+    options:
+      - id: a
+        text: "Delete the `cilium-config` ConfigMap."
+        explanation: "Not correct. This would remove all agent settings and make the problem larger."
+      - id: b
+        text: "Change `routing-mode` to `native`."
+        explanation: "Not correct. The routing mode decides how packets cross nodes. It does not give a node more addresses."
+      - id: c
+        text: "Restart the kubelet on every node."
+        explanation: "Not correct. The kubelet is not the component that runs out of addresses."
+      - id: d
+        text: "Read the IPAM section of `cilium-dbg status --verbose` on that node."
+        explanation: "Correct. It shows how many addresses the node allocated out of its range, so you can see whether the range is full."
+    correct_option: d
+    explanation: "The agent status shows the allocation state of the node range."
+
+  - id: ats056-010-m03-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Contrast tunnel and native routing"
+    source_readings:
+      - sections/section-010/module-03/course-02-routing-mode-and-tunnels.md
+    prompt: "Which routing setup needs the node network to know every pod range?"
+    options:
+      - id: a
+        text: "Tunnel mode with VXLAN."
+        explanation: "Not correct. Tunnel mode wraps packets, so the node network only carries UDP between nodes."
+      - id: b
+        text: "Native routing mode."
+        explanation: "Correct. Native routing sends the original packet, so routes to the pod ranges must exist on the network or on the nodes."
+      - id: c
+        text: "Tunnel mode with Geneve."
+        explanation: "Not correct. Geneve is also encapsulation and needs no pod routes in the node network."
+      - id: d
+        text: "Any mode with `enable-policy: never`."
+        explanation: "Not correct. Policy enforcement is unrelated to routing."
+    correct_option: b
+    explanation: "Only native routing exposes the original pod addresses to the node network."
+
+  - id: ats056-010-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the tunnel ports"
+    source_readings:
+      - sections/section-010/module-03/course-02-routing-mode-and-tunnels.md
+    prompt: "A cluster uses VXLAN in tunnel mode. Which traffic must a firewall between the nodes allow?"
+    options:
+      - id: a
+        text: "TCP port 8472."
+        explanation: "Not correct. VXLAN in Cilium uses UDP, not TCP."
+      - id: b
+        text: "UDP port 6081."
+        explanation: "Not correct. 6081 is the Geneve port. This cluster uses VXLAN."
+      - id: c
+        text: "UDP port 8472."
+        explanation: "Correct. Cilium sends VXLAN packets between nodes on UDP port 8472."
+      - id: d
+        text: "ICMP only."
+        explanation: "Not correct. ICMP does not carry the encapsulated pod traffic."
+    correct_option: c
+    explanation: "VXLAN uses UDP 8472 and Geneve uses UDP 6081 in Cilium."
+
+  - id: ats056-010-m03-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Recognise an MTU problem"
+    source_readings:
+      - sections/section-010/module-03/course-02-routing-mode-and-tunnels.md
+    prompt: "After a change to tunnel mode, small requests between pods on different nodes work, but large responses hang. What is the most likely cause?"
+    options:
+      - id: a
+        text: "The pod MTU is larger than the node network can carry once the tunnel header is added."
+        explanation: "Correct. The tunnel header takes bytes from each packet, so a pod MTU that is too high drops large packets while small ones pass."
+      - id: b
+        text: "The IPAM mode is wrong."
+        explanation: "Not correct. A wrong IPAM mode would stop addresses from being assigned, so no request would work."
+      - id: c
+        text: "The agent has no ConfigMap."
+        explanation: "Not correct. Without the ConfigMap the agent would not start at all."
+      - id: d
+        text: "kube-proxy replacement is off."
+        explanation: "Not correct. This affects Services, and the symptom depends on packet size, not on the Service."
+    correct_option: a
+    explanation: "Encapsulation overhead lowers the usable MTU, and a wrong MTU shows as hanging large transfers."
+
+  - id: ats056-010-m03-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "State the API server address requirement"
+    source_readings:
+      - sections/section-010/module-03/course-03-kube-proxy-replacement.md
+    prompt: "Which two Helm values does a cluster without `kube-proxy` need so that the agents can start?"
+    options:
+      - id: a
+        text: "`ipam.mode` and `routingMode`."
+        explanation: "Not correct. These choose addresses and routing. They do not tell the agent where the API server is."
+      - id: b
+        text: "`policyEnforcementMode` and `debug`."
+        explanation: "Not correct. Neither value helps the agent reach the API server."
+      - id: c
+        text: "`operator.replicas` and `MTU`."
+        explanation: "Not correct. Replica count and MTU do not give the API server address."
+      - id: d
+        text: "`k8sServiceHost` and `k8sServicePort`."
+        explanation: "Correct. Without kube-proxy the Service address of the API server does not work at start, so the agent needs a direct address."
+    correct_option: d
+    explanation: "The agent must reach the API server before any Service rule exists."
+
+  - id: ats056-010-m03-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Verify kube-proxy replacement"
+    source_readings:
+      - sections/section-010/module-03/course-03-kube-proxy-replacement.md
+    prompt: "Which evidence best shows that kube-proxy replacement is really active on a node?"
+    options:
+      - id: a
+        text: "The Helm value in `values.yaml` on your laptop."
+        explanation: "Not correct. A file on your machine does not show what the running agent does."
+      - id: b
+        text: "The KubeProxyReplacement section of `cilium-dbg status --verbose` in the agent."
+        explanation: "Correct. The agent reports whether the feature is on and which parts it covers."
+      - id: c
+        text: "The age of the `cilium` DaemonSet."
+        explanation: "Not correct. The age says nothing about the feature."
+      - id: d
+        text: "The number of nodes in the cluster."
+        explanation: "Not correct. The node count is unrelated to this setting."
+    correct_option: b
+    explanation: "Ask the agent, because it can differ from the configuration."
+
+  - id: ats056-010-m03-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Apply the default enforcement mode"
+    source_readings:
+      - sections/section-010/module-03/course-04-policy-enforcement-and-safe-changes.md
+    prompt: "A cluster runs with `enable-policy: default`. A `CiliumNetworkPolicy` with ingress rules selects only the `probe` pod. What happens to the `shuttle` pod, which no policy selects?"
+    options:
+      - id: a
+        text: "It denies all ingress and egress."
+        explanation: "Not correct. That is the behaviour of always, not default."
+      - id: b
+        text: "It also ignores policy, as in `never`, and the cluster has no enforcement at all."
+        explanation: "Not correct. Enforcement is on for the selected pod, so the cluster still enforces policy."
+      - id: c
+        text: "It accepts all traffic, because enforcement applies only to selected endpoints."
+        explanation: "Correct. In default mode an endpoint that no policy selects stays open, and only the `probe` pod is restricted."
+      - id: d
+        text: "It is removed from the node."
+        explanation: "Not correct. Policy never deletes pods."
+    correct_option: c
+    explanation: "Default mode applies policy to selected endpoints only."
+

@@ -1,4 +1,4 @@
-# Final domain knowledge check across both sections.
+# Final domain knowledge check across both sections, including the datapath settings and Helm modules.
 schema_version: 1
 kind: question_bank
 id: ats056-final
@@ -286,3 +286,95 @@ questions:
         explanation: "This option does not match the mechanism. A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
     correct_option: a
     explanation: "A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
+
+  - id: ats056-final-q13
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Say who allocates node ranges in cluster pool mode"
+    source_readings:
+      - sections/section-010/module-03/course-01-ipam-modes.md
+    prompt: "In a cluster that uses the `cluster-pool` IPAM mode, which component splits the cluster-wide range into one range for each node?"
+    options:
+      - id: a
+        text: "The Kubernetes controller manager."
+        explanation: "Not correct. The controller manager fills node.spec.podCIDR, which only the kubernetes IPAM mode uses."
+      - id: b
+        text: "The Cilium agent on each node."
+        explanation: "Not correct. The agent hands out single addresses from a range it already has. It does not create the node range."
+      - id: c
+        text: "The Cilium operator."
+        explanation: "Correct. The operator splits the pool and writes the result into the CiliumNode resource of each node."
+      - id: d
+        text: "The kubelet."
+        explanation: "Not correct. The kubelet starts pods and asks the network plugin for an address. It does not allocate ranges."
+    correct_option: c
+    explanation: "In cluster pool mode the operator owns the ranges and records them in the CiliumNode resources."
+
+  - id: ats056-final-q14
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Apply the default enforcement mode"
+    source_readings:
+      - sections/section-010/module-03/course-04-policy-enforcement-and-safe-changes.md
+    prompt: "A cluster runs with `enable-policy: default`. A `CiliumNetworkPolicy` with ingress rules selects only the `probe` pod. What happens to the `shuttle` pod, which no policy selects?"
+    options:
+      - id: a
+        text: "It denies all ingress and egress."
+        explanation: "Not correct. That is the behaviour of always, not default."
+      - id: b
+        text: "It also ignores policy, as in `never`, and the cluster has no enforcement at all."
+        explanation: "Not correct. Enforcement is on for the selected pod, so the cluster still enforces policy."
+      - id: c
+        text: "It accepts all traffic, because enforcement applies only to selected endpoints."
+        explanation: "Correct. In default mode an endpoint that no policy selects stays open, and only the `probe` pod is restricted."
+      - id: d
+        text: "It is removed from the node."
+        explanation: "Not correct. Policy never deletes pods."
+    correct_option: c
+    explanation: "Default mode applies policy to selected endpoints only."
+
+  - id: ats056-final-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Locate the Helm release records"
+    source_readings:
+      - sections/section-020/module-04/course-01-repository-chart-and-release.md
+    prompt: "Where does Helm store the history of the release `cilium`?"
+    options:
+      - id: a
+        text: "In the ConfigMap `cilium-config`."
+        explanation: "Not correct. That ConfigMap holds agent settings, not release history."
+      - id: b
+        text: "In a file on the machine that ran `helm install`."
+        explanation: "Not correct. Helm keeps release state in the cluster, so another machine can upgrade the release."
+      - id: c
+        text: "In Secrets of type `helm.sh/release.v1` in the release namespace."
+        explanation: "Correct. Each revision is a Secret such as sh.helm.release.v1.cilium.v1."
+      - id: d
+        text: "In the DaemonSet `cilium`."
+        explanation: "Not correct. The DaemonSet is one of the objects of the release, not its record."
+    correct_option: c
+    explanation: "Release revisions are Secrets in the release namespace."
+
+  - id: ats056-final-q16
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain the pre-flight step"
+    source_readings:
+      - sections/section-020/module-04/course-03-upgrade-history-and-rollback.md
+    prompt: "What does the Cilium pre-flight chart check before an upgrade?"
+    options:
+      - id: a
+        text: "That the new agent version can read the existing state, using a copy of the new agent that runs next to the real agents."
+        explanation: "Correct. It is installed with agent and operator disabled and the preflight value on, and it exposes problems before the real rollout."
+      - id: b
+        text: "That the node kernel is newer than 5.10."
+        explanation: "Not correct. Kernel checks are not the job of the pre-flight chart."
+      - id: c
+        text: "That every Service has a backend."
+        explanation: "Not correct. Service backends are not part of the pre-flight check."
+      - id: d
+        text: "That the Helm repository is reachable."
+        explanation: "Not correct. A repository check is done by helm repo update, not by this chart."
+    correct_option: a
+    explanation: "The pre-flight chart tests the new version against the existing state."

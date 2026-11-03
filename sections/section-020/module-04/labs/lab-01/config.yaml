@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Upgrade A Cilium Helm Release (LAB). Graded against the live cluster. UNTESTED: never run.
+# Add Hubble Relay with helm upgrade, keep every old value and report the release.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-020-04
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: revision-increased
+      description: "The Helm release cilium is deployed at revision 2 or higher"
+      type: file
+      source: validation/validate-revision-increased.sh
+      hint: "Change the release with helm upgrade. Use helm history cilium -n kube-system to see the revisions."
+    - name: values-kept
+      description: "The release keeps its old values and has hubble.relay.enabled=true"
+      type: file
+      source: validation/validate-values-kept.sh
+      hint: "Use --reuse-values so that Helm keeps the values of the first installation, and add --set hubble.relay.enabled=true. Check with helm get values cilium -n kube-system."
+    - name: relay-running
+      description: "The hubble-relay Deployment has one ready replica and the agents are ready"
+      type: file
+      source: validation/validate-relay-running.sh
+      hint: "Wait for the rollout with kubectl -n kube-system rollout status deployment/hubble-relay, then run cilium status --wait."
+    - name: upgrade-report
+      description: "The ConfigMap upgrade-report holds the live revision and chart version"
+      type: file
+      source: validation/validate-upgrade-report.sh
+      hint: "Read both values with helm list -n kube-system and create the ConfigMap in starfleet with the keys revision and chart after the upgrade."
+    - name: single-release
+      description: "Guard: one Helm release cilium exists and the agents are ready"
+      type: file
+      source: validation/validate-guard.sh
+      hint: "Upgrade the existing release. Do not install a second release and do not run cilium install. This check passes before any action."
+
+teardown:
+  keepCluster: false

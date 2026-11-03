@@ -1,3 +1,4 @@
+---
 schema_version: 1
 course_id: ATS056
 status: draft
@@ -5,25 +6,16 @@ banks:
 - id: ats056-010
   path: sections/section-010/quiz.yaml
   question_count: 10
-  placement:
-    position: after
-    reading: sections/section-010/capstone/labs/lab-01/question.md
   covered_sections:
   - section-010
 - id: ats056-020
   path: sections/section-020/quiz.yaml
   question_count: 12
-  placement:
-    position: after
-    reading: sections/section-020/capstone/labs/lab-01/question.md
   covered_sections:
   - section-020
 - id: ats056-final
   path: sections/final-domain-quiz.yaml
-  question_count: 12
-  placement:
-    position: after
-    reading: sections/section-020/quiz.yaml
+  question_count: 16
   covered_sections:
   - section-010
   - section-020

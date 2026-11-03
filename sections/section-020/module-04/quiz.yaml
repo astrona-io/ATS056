@@ -1,0 +1,243 @@
+# Knowledge check for section 020 module 04. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats056-020-m04
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-04
+  title: "Install And Upgrade Cilium With Helm"
+questions:
+  - id: ats056-020-m04-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Pin the chart version"
+    source_readings:
+      - sections/section-020/module-04/course-01-repository-chart-and-release.md
+    prompt: "Why should the command `helm install cilium cilium/cilium` always include `--version`?"
+    options:
+      - id: a
+        text: "Helm refuses to install a chart without a version."
+        explanation: "Not correct. Helm installs the newest chart when no version is given, so it does not refuse."
+      - id: b
+        text: "Without it Helm installs the newest chart, and the result depends on the day of the command."
+        explanation: "Correct. The chart version equals the Cilium version, so a pinned version makes the installation repeatable."
+      - id: c
+        text: "The version selects the namespace of the release."
+        explanation: "Not correct. The namespace comes from --namespace, not from the version."
+      - id: d
+        text: "The version turns on Hubble."
+        explanation: "Not correct. Hubble is a value, not a chart version feature."
+    correct_option: b
+    explanation: "A pinned version makes the installation reproducible."
+
+  - id: ats056-020-m04-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Locate the Helm release records"
+    source_readings:
+      - sections/section-020/module-04/course-01-repository-chart-and-release.md
+    prompt: "Where does Helm store the history of the release `cilium`?"
+    options:
+      - id: a
+        text: "In the ConfigMap `cilium-config`."
+        explanation: "Not correct. That ConfigMap holds agent settings, not release history."
+      - id: b
+        text: "In a file on the machine that ran `helm install`."
+        explanation: "Not correct. Helm keeps release state in the cluster, so another machine can upgrade the release."
+      - id: c
+        text: "In Secrets of type `helm.sh/release.v1` in the release namespace."
+        explanation: "Correct. Each revision is a Secret such as sh.helm.release.v1.cilium.v1."
+      - id: d
+        text: "In the DaemonSet `cilium`."
+        explanation: "Not correct. The DaemonSet is one of the objects of the release, not its record."
+    correct_option: c
+    explanation: "Release revisions are Secrets in the release namespace."
+
+  - id: ats056-020-m04-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know what an uninstall leaves behind"
+    source_readings:
+      - sections/section-020/module-04/course-04-helm-and-the-cilium-cli.md
+    prompt: "After `helm uninstall cilium -n kube-system`, which objects usually remain?"
+    options:
+      - id: a
+        text: "The Cilium CRDs, because the operator created them and not Helm."
+        explanation: "Correct. Helm removes only objects of the release, so CRDs that the operator registered stay."
+      - id: b
+        text: "The DaemonSet `cilium`."
+        explanation: "Not correct. The DaemonSet is part of the release and Helm deletes it."
+      - id: c
+        text: "The Deployment `cilium-operator`."
+        explanation: "Not correct. The operator Deployment is part of the release and Helm deletes it."
+      - id: d
+        text: "The ConfigMap `cilium-config`."
+        explanation: "Not correct. The ConfigMap is rendered by the chart and Helm deletes it."
+    correct_option: a
+    explanation: "CRDs created by the operator outlive the release."
+
+  - id: ats056-020-m04-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply Helm precedence"
+    source_readings:
+      - sections/section-020/module-04/course-02-values-and-precedence.md
+    prompt: "A values file sets `ipam.mode`. You also pass `--set ipam.mode=cluster-pool` in the same command. Which value does the release get?"
+    options:
+      - id: a
+        text: "The value from the file, because files are read last."
+        explanation: "Not correct. Files override chart defaults, but --set overrides files."
+      - id: b
+        text: "The chart default."
+        explanation: "Not correct. A value that you set always replaces the default."
+      - id: c
+        text: "Helm stops with a conflict error."
+        explanation: "Not correct. Helm does not report this as an error. It applies its precedence order."
+      - id: d
+        text: "`cluster-pool`, because `--set` beats a values file."
+        explanation: "Correct. The order is chart defaults, then files, then --set."
+    correct_option: d
+    explanation: "--set has the highest precedence."
+
+  - id: ats056-020-m04-q05
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Spot a lost-values upgrade"
+    source_readings:
+      - sections/section-020/module-04/course-02-values-and-precedence.md
+    prompt: "You upgrade with `helm upgrade cilium cilium/cilium --version 1.20.3 --set hubble.relay.enabled=true` and no reuse option or file. What is the risk?"
+    options:
+      - id: a
+        text: "Hubble Relay will not start."
+        explanation: "Not correct. The relay value is set explicitly, so it is applied."
+      - id: b
+        text: "Values set earlier, such as `ipam.mode`, fall back to the chart defaults."
+        explanation: "Correct. Without a reuse option or a file, Helm starts from the chart defaults and drops earlier user values."
+      - id: c
+        text: "The release name changes."
+        explanation: "Not correct. The name is the first argument of the command and stays the same."
+      - id: d
+        text: "The namespace is deleted."
+        explanation: "Not correct. An upgrade never deletes a namespace."
+    correct_option: b
+    explanation: "Earlier values are lost unless Helm is told to reuse them."
+
+  - id: ats056-020-m04-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the right reuse option"
+    source_readings:
+      - sections/section-020/module-04/course-02-values-and-precedence.md
+    prompt: "Which option resets to the defaults of the new chart and then re-applies the user values of the last release?"
+    options:
+      - id: a
+        text: "`--reuse-values`"
+        explanation: "Not correct. This reuses the old computed values, including the old chart defaults, so new defaults can be missing."
+      - id: b
+        text: "`--reset-values`"
+        explanation: "Not correct. This drops the user values of the last release."
+      - id: c
+        text: "`--reset-then-reuse-values`"
+        explanation: "Correct. This resets to the new chart defaults and then applies the earlier user values."
+      - id: d
+        text: "`--force`"
+        explanation: "Not correct. This recreates resources. It does not decide which values are used."
+    correct_option: c
+    explanation: "--reset-then-reuse-values combines new defaults with earlier user values."
+
+  - id: ats056-020-m04-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain the pre-flight step"
+    source_readings:
+      - sections/section-020/module-04/course-03-upgrade-history-and-rollback.md
+    prompt: "What does the Cilium pre-flight chart check before an upgrade?"
+    options:
+      - id: a
+        text: "That the new agent version can read the existing state, using a copy of the new agent that runs next to the real agents."
+        explanation: "Correct. It is installed with agent and operator disabled and the preflight value on, and it exposes problems before the real rollout."
+      - id: b
+        text: "That the node kernel is newer than 5.10."
+        explanation: "Not correct. Kernel checks are not the job of the pre-flight chart."
+      - id: c
+        text: "That every Service has a backend."
+        explanation: "Not correct. Service backends are not part of the pre-flight check."
+      - id: d
+        text: "That the Helm repository is reachable."
+        explanation: "Not correct. A repository check is done by helm repo update, not by this chart."
+    correct_option: a
+    explanation: "The pre-flight chart tests the new version against the existing state."
+
+  - id: ats056-020-m04-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe what a rollback does"
+    source_readings:
+      - sections/section-020/module-04/course-03-upgrade-history-and-rollback.md
+    prompt: "Which statement about `helm rollback cilium 1 -n kube-system` is correct?"
+    options:
+      - id: a
+        text: "It deletes revisions 2 and higher from the history."
+        explanation: "Not correct. Rollback adds a new revision and keeps the history."
+      - id: b
+        text: "It restores the stored state of the nodes to its old form."
+        explanation: "Not correct. It re-applies the manifest only, and changes already made to node state stay."
+      - id: c
+        text: "It reinstalls the CRDs from revision 1."
+        explanation: "Not correct. The CRDs belong to the operator, not to the release manifest."
+      - id: d
+        text: "It creates a new revision with the content of revision 1."
+        explanation: "Correct. Helm records the rollback as a new revision, and the agents restart."
+    correct_option: d
+    explanation: "A rollback is a new revision that re-applies an old manifest."
+
+  - id: ats056-020-m04-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Apply the minor version rule"
+    source_readings:
+      - sections/section-020/module-04/course-03-upgrade-history-and-rollback.md
+    prompt: "How should you move a cluster from Cilium 1.18 to 1.20?"
+    options:
+      - id: a
+        text: "Upgrade directly in one step."
+        explanation: "Not correct. Skipping a minor version is outside the supported path."
+      - id: b
+        text: "Upgrade to 1.19 first, check the cluster, then upgrade to 1.20."
+        explanation: "Correct. Neighbouring minor versions are supported during a rollout, so go one step at a time."
+      - id: c
+        text: "Uninstall Cilium and install 1.20 on the running cluster."
+        explanation: "Not correct. This cuts network configuration from all pods."
+      - id: d
+        text: "Edit the image tag of the DaemonSet with `kubectl`."
+        explanation: "Not correct. This bypasses Helm and leaves the release out of date."
+    correct_option: b
+    explanation: "Upgrade one minor version at a time."
+
+  - id: ats056-020-m04-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain the one-owner rule"
+    source_readings:
+      - sections/section-020/module-04/course-04-helm-and-the-cilium-cli.md
+    prompt: "Why is `kubectl apply` of the output of `helm template cilium cilium/cilium` a bad way to manage Cilium?"
+    options:
+      - id: a
+        text: "The output is not valid YAML."
+        explanation: "Not correct. helm template prints valid YAML."
+      - id: b
+        text: "It installs a different version of Cilium."
+        explanation: "Not correct. It installs the version that you rendered."
+      - id: c
+        text: "Helm does not own the objects, so `helm upgrade` and `cilium upgrade` cannot manage them."
+        explanation: "Correct. Objects applied outside a release are not tracked in the release history."
+      - id: d
+        text: "It needs the Cilium command-line tool first."
+        explanation: "Not correct. It does not need the tool."
+    correct_option: c
+    explanation: "One release must own the objects of the installation."
+

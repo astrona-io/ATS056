@@ -141,6 +141,47 @@ modules:
         path: sections/section-010/module-02/course-04-summary.md
 
       - type: reading
+        title: "Core Datapath Settings Of Cilium"
+        path: sections/section-010/module-03/course.md
+      - type: reading
+        title: "IPAM Modes"
+        path: sections/section-010/module-03/course-01-ipam-modes.md
+      - type: reading
+        title: "Routing Mode And Tunnels"
+        path: sections/section-010/module-03/course-02-routing-mode-and-tunnels.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Report And Change Datapath Settings Lab"
+        path: sections/section-010/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: cilium-datapath
+        task_kind: troubleshooting
+        tags: [cilium-cli, cilium-config, ipam, routing-mode, enable-policy]
+        learning_goals:
+          - "Read the IPAM, routing, tunnel and enforcement settings"
+          - "Record the starting values in a ConfigMap"
+          - "Set the policy enforcement mode to default and restart the agents"
+        resources:
+          - name: "Cilium configuration reference"
+            url: https://docs.cilium.io/en/stable/network/concepts/ipam/
+      - type: reading
+        title: "Kube-Proxy Replacement"
+        path: sections/section-010/module-03/course-03-kube-proxy-replacement.md
+      - type: reading
+        title: "Policy Enforcement And Safe Changes"
+        path: sections/section-010/module-03/course-04-policy-enforcement-and-safe-changes.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Core Datapath Settings Of Cilium"
+        path: sections/section-010/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
         title: "Question"
         path: sections/section-010/capstone/labs/lab-01/question.md
       - type: lab
@@ -279,6 +320,47 @@ modules:
       - type: reading
         title: "Summary"
         path: sections/section-020/module-03/course-04-summary.md
+
+      - type: reading
+        title: "Install And Upgrade Cilium With Helm"
+        path: sections/section-020/module-04/course.md
+      - type: reading
+        title: "Repository, Chart And Release"
+        path: sections/section-020/module-04/course-01-repository-chart-and-release.md
+      - type: reading
+        title: "Values And Their Precedence"
+        path: sections/section-020/module-04/course-02-values-and-precedence.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-04/labs/lab-01/question.md
+      - type: lab
+        title: "Upgrade A Cilium Helm Release Lab"
+        path: sections/section-020/module-04/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: cilium-helm
+        task_kind: build
+        tags: [helm, helm-upgrade, reuse-values, hubble-relay, helm-history]
+        learning_goals:
+          - "Upgrade the Helm release and keep the old values"
+          - "Enable Hubble Relay through a value"
+          - "Report the revision and the chart version"
+        resources:
+          - name: "Install Cilium with Helm"
+            url: https://docs.cilium.io/en/stable/installation/k8s-install-helm/
+      - type: reading
+        title: "Upgrade, History And Rollback"
+        path: sections/section-020/module-04/course-03-upgrade-history-and-rollback.md
+      - type: reading
+        title: "Helm And The Cilium CLI"
+        path: sections/section-020/module-04/course-04-helm-and-the-cilium-cli.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-04/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Install And Upgrade Cilium With Helm"
+        path: sections/section-020/module-04/quiz.yaml
+        pass_score: 70
 
       - type: reading
         title: "Question"

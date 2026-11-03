@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Report And Change Datapath Settings (LAB). Graded against the live cluster. UNTESTED: never run.
+# Report four datapath settings, then change the policy enforcement mode with the Cilium CLI.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-010-03
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: report-matches
+      description: "The ConfigMap datapath-report in starfleet holds the starting values of the four settings"
+      type: file
+      source: validation/validate-report-matches.sh
+      hint: "Read the keys ipam, routing-mode, tunnel-protocol and enable-policy with cilium config view before you change anything, and store them in a ConfigMap named datapath-report in the namespace starfleet."
+    - name: enforcement-default
+      description: "The key enable-policy in cilium-config is default"
+      type: file
+      source: validation/validate-enforcement-default.sh
+      hint: "Use the Cilium CLI to set the key enable-policy to default in the cilium-config ConfigMap."
+    - name: agents-restarted
+      description: "Every agent pod was created after the change"
+      type: file
+      source: validation/validate-agents-restarted.sh
+      hint: "The agents read cilium-config only when they start. Restart them, or leave the default restart of cilium config set on, and wait for the new pods."
+    - name: cilium-ready
+      description: "All agents are ready and the operator is available"
+      type: file
+      source: validation/validate-cilium-ready.sh
+      hint: "Wait until the DaemonSet cilium reports all agents ready. Check with kubectl -n kube-system rollout status daemonset/cilium."
+    - name: other-settings-unchanged
+      description: "Guard: ipam, routing-mode and tunnel-protocol keep their values"
+      type: file
+      source: validation/validate-other-settings-unchanged.sh
+      hint: "Change only the key enable-policy. Do not reinstall Cilium."
+
+teardown:
+  keepCluster: false

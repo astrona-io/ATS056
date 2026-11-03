@@ -199,7 +199,7 @@ Strict guidelines:
 
 ## About this repo (ATS056 only)
 
-Structure: section 010 has two modules (query, modify) and section 020 has three (install, connectivity test, status). Each module has a playground and one graded lab, each section has a capstone and a `quiz.yaml`, and `sections/final-domain-quiz.yaml` closes the course. Targets Kubernetes 1.35, Cilium 1.20.3 and Cilium CLI 0.20.2. All labs and playgrounds are UNTESTED: static checks only.
+Structure: section 010 has three modules (query, modify, core datapath settings) and section 020 has four (install, connectivity test, status, Helm install and upgrade). Each module has a playground and one graded lab, each section has a capstone and a `quiz.yaml`, and `sections/final-domain-quiz.yaml` closes the course. Targets Kubernetes 1.35, Cilium 1.20.3 and Cilium CLI 0.20.2. All labs and playgrounds are UNTESTED: static checks only.
 
 The course covers **Installation and Configuration**, worth **10%** of
 **Cilium Certified Associate (CCA)**. It is part of **ATP011**.
