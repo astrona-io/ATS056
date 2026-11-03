@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Install, Test And Monitor Cilium Capstone (LAB). Graded against the live cluster. UNTESTED: never run.
+# Install Cilium, run a scoped connectivity test and report the monitored status.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-cap-020
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: helm-release
+      description: "A Helm release named cilium with chart 1.20.3 is deployed"
+      type: file
+      source: validation/validate-helm-release.sh
+      hint: "Use cilium install with --version 1.20.3. The Cilium CLI creates a Helm release named cilium."
+    - name: agent-image
+      description: "The agent image is Cilium 1.20.3"
+      type: file
+      source: validation/validate-agent-image.sh
+      hint: "Pass --version 1.20.3 to cilium install."
+    - name: install-settings
+      description: "ipam is kubernetes, the operator has 1 replica and Hubble Relay is deployed"
+      type: file
+      source: validation/validate-install-settings.sh
+      hint: "Use --set ipam.mode=kubernetes --set operator.replicas=1 --set hubble.relay.enabled=true."
+    - name: agents-ready
+      description: "One agent is ready on every node and the operator is available"
+      type: file
+      source: validation/validate-agents-ready.sh
+      hint: "Wait with cilium status --wait."
+    - name: test-namespace
+      description: "The test namespace ats-conn-1 exists"
+      type: file
+      source: validation/validate-test-namespace.sh
+      hint: "Run cilium connectivity test with --test-namespace ats-conn."
+    - name: test-scope
+      description: "The run used a single node and a custom namespace"
+      type: file
+      source: validation/validate-test-scope.sh
+      hint: "Add --single-node and --test-namespace ats-conn."
+    - name: install-report
+      description: "install-report holds the live ready counts"
+      type: file
+      source: validation/validate-install-report.sh
+      hint: "Create the ConfigMap in starfleet with keys agents-ready, operator-ready and relay-ready after everything is ready."
+    - name: single-network-plugin
+      description: "Guard: no other network plugin DaemonSet exists"
+      type: file
+      source: validation/validate-single-network-plugin.sh
+      hint: "Do not install a second network plugin. This check passes before any action."
+
+teardown:
+  keepCluster: false

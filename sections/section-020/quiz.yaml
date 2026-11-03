@@ -1,0 +1,288 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats056-020
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "Install Cilium, Test It And Monitor It"
+questions:
+  - id: ats056-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "State the prerequisites of a Cilium install"
+    source_readings:
+      - sections/section-020/module-01/course-01-prerequisites-and-what-gets-installed.md
+    prompt: "Which condition must be true before `cilium install` is run on a cluster?"
+    options:
+      - id: a
+        text: "The cluster has at least three control plane nodes."
+        explanation: "This option does not match the mechanism. Cilium loads BPF programs and needs a recent kernel. A second network plugin conflicts with it. The other options are not prerequisites."
+      - id: b
+        text: "The nodes have a public IP address."
+        explanation: "This option does not match the mechanism. Cilium loads BPF programs and needs a recent kernel. A second network plugin conflicts with it. The other options are not prerequisites."
+      - id: c
+        text: "Hubble Relay is already running."
+        explanation: "This option does not match the mechanism. Cilium loads BPF programs and needs a recent kernel. A second network plugin conflicts with it. The other options are not prerequisites."
+      - id: d
+        text: "The nodes run Linux kernel 5.10 or newer, and no other network plugin is installed."
+        explanation: "Correct. Cilium loads BPF programs and needs a recent kernel. A second network plugin conflicts with it. The other options are not prerequisites."
+    correct_option: d
+    explanation: "Cilium loads BPF programs and needs a recent kernel. A second network plugin conflicts with it. The other options are not prerequisites."
+
+  - id: ats056-020-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pin the version of an install"
+    source_readings:
+      - sections/section-020/module-01/course-02-install-options-and-values.md
+    prompt: "Why is `--version` given explicitly in the install commands of this course?"
+    options:
+      - id: a
+        text: "The flag is the only way to install the relay."
+        explanation: "This option does not match the mechanism. The CLI installs its own default version when none is given, and that default changes between CLI releases. A pinned version gives the same cluster every time."
+      - id: b
+        text: "The flag selects the number of agents."
+        explanation: "This option does not match the mechanism. The CLI installs its own default version when none is given, and that default changes between CLI releases. A pinned version gives the same cluster every time."
+      - id: c
+        text: "Without the flag, the install fails."
+        explanation: "This option does not match the mechanism. The CLI installs its own default version when none is given, and that default changes between CLI releases. A pinned version gives the same cluster every time."
+      - id: d
+        text: "Each CLI release has its own default version, so pinning keeps the result the same on any machine."
+        explanation: "Correct. The CLI installs its own default version when none is given, and that default changes between CLI releases. A pinned version gives the same cluster every time."
+    correct_option: d
+    explanation: "The CLI installs its own default version when none is given, and that default changes between CLI releases. A pinned version gives the same cluster every time."
+
+  - id: ats056-020-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Set chart values during an install"
+    source_readings:
+      - sections/section-020/module-01/course-02-install-options-and-values.md
+    prompt: "Which command installs Cilium 1.20.3 with the Helm value `ipam.mode` set to `kubernetes`?"
+    options:
+      - id: a
+        text: "`helm set ipam.mode=kubernetes cilium`"
+        explanation: "This option does not match the mechanism. `--set` passes chart values, in the same way as in Helm. `cilium config set` needs an installation that already exists."
+      - id: b
+        text: "`cilium install --version 1.20.3 --set ipam.mode=kubernetes`"
+        explanation: "Correct. `--set` passes chart values, in the same way as in Helm. `cilium config set` needs an installation that already exists."
+      - id: c
+        text: "`cilium install --ipam kubernetes --version 1.20.3`"
+        explanation: "This option does not match the mechanism. `--set` passes chart values, in the same way as in Helm. `cilium config set` needs an installation that already exists."
+      - id: d
+        text: "`cilium config set ipam kubernetes` before the install"
+        explanation: "This option does not match the mechanism. `--set` passes chart values, in the same way as in Helm. `cilium config set` needs an installation that already exists."
+    correct_option: b
+    explanation: "`--set` passes chart values, in the same way as in Helm. `cilium config set` needs an installation that already exists."
+
+  - id: ats056-020-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe the default values behaviour of cilium upgrade"
+    source_readings:
+      - sections/section-020/module-01/course-03-verify-upgrade-and-uninstall.md
+    prompt: "What does `cilium upgrade` do with the values of the current release when no values flag is given?"
+    options:
+      - id: a
+        text: "It discards them and applies the chart defaults."
+        explanation: "This option does not match the mechanism. The default is `--reset-then-reuse-values`. Use `--reuse-values` or `--reset-values` for the other behaviours, and `--dry-run` to see the result first."
+      - id: b
+        text: "It resets to the new chart defaults and then reuses the values that you set earlier (`--reset-then-reuse-values`)."
+        explanation: "Correct. The default is `--reset-then-reuse-values`. Use `--reuse-values` or `--reset-values` for the other behaviours, and `--dry-run` to see the result first."
+      - id: c
+        text: "It refuses to run."
+        explanation: "This option does not match the mechanism. The default is `--reset-then-reuse-values`. Use `--reuse-values` or `--reset-values` for the other behaviours, and `--dry-run` to see the result first."
+      - id: d
+        text: "It deletes the ConfigMap first."
+        explanation: "This option does not match the mechanism. The default is `--reset-then-reuse-values`. Use `--reuse-values` or `--reset-values` for the other behaviours, and `--dry-run` to see the result first."
+    correct_option: b
+    explanation: "The default is `--reset-then-reuse-values`. Use `--reuse-values` or `--reset-values` for the other behaviours, and `--dry-run` to see the result first."
+
+  - id: ats056-020-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what uninstall leaves behind"
+    source_readings:
+      - sections/section-020/module-01/course-03-verify-upgrade-and-uninstall.md
+    prompt: "After `cilium uninstall`, why can pods on a node still have trouble even though the Cilium pods are gone?"
+    options:
+      - id: a
+        text: "The command only stops the agents and keeps the operator."
+        explanation: "This option does not match the mechanism. By default the CNI configuration is not removed from the nodes, so a node can keep pointing at a plugin that no longer runs."
+      - id: b
+        text: "The command deletes the nodes."
+        explanation: "This option does not match the mechanism. By default the CNI configuration is not removed from the nodes, so a node can keep pointing at a plugin that no longer runs."
+      - id: c
+        text: "Uninstall never removes the Helm release."
+        explanation: "This option does not match the mechanism. By default the CNI configuration is not removed from the nodes, so a node can keep pointing at a plugin that no longer runs."
+      - id: d
+        text: "The CNI configuration file stays on the nodes by default, because `cni.uninstall` is false."
+        explanation: "Correct. By default the CNI configuration is not removed from the nodes, so a node can keep pointing at a plugin that no longer runs."
+    correct_option: d
+    explanation: "By default the CNI configuration is not removed from the nodes, so a node can keep pointing at a plugin that no longer runs."
+
+  - id: ats056-020-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name what a single-node connectivity run deploys"
+    source_readings:
+      - sections/section-020/module-02/course-01-what-the-test-deploys-and-checks.md
+    prompt: "A learner runs `cilium connectivity test --single-node`. Which test workloads exist?"
+    options:
+      - id: a
+        text: "One workload for every node, named after the node."
+        explanation: "This option does not match the mechanism. A single-node run keeps all test pods on one node. `echo-other-node` appears only in a multi-node run."
+      - id: b
+        text: "No workloads, because the test only reads the configuration."
+        explanation: "This option does not match the mechanism. A single-node run keeps all test pods on one node. `echo-other-node` appears only in a multi-node run."
+      - id: c
+        text: "`client`, `client2` and `echo-same-node`, with no `echo-other-node`."
+        explanation: "Correct. A single-node run keeps all test pods on one node. `echo-other-node` appears only in a multi-node run."
+      - id: d
+        text: "Only `echo-other-node`."
+        explanation: "This option does not match the mechanism. A single-node run keeps all test pods on one node. `echo-other-node` appears only in a multi-node run."
+    correct_option: c
+    explanation: "A single-node run keeps all test pods on one node. `echo-other-node` appears only in a multi-node run."
+
+  - id: ats056-020-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Select a scenario and a namespace for a run"
+    source_readings:
+      - sections/section-020/module-02/course-02-selecting-and-scoping-a-run.md
+    prompt: "A learner runs `cilium connectivity test --test pod-to-pod --test-namespace ats-conn`. Which namespace do the test workloads use?"
+    options:
+      - id: a
+        text: "`kube-system`"
+        explanation: "This option does not match the mechanism. The CLI adds a numeric suffix to the namespace given with `--test-namespace`, so the workloads run in `ats-conn-1`."
+      - id: b
+        text: "`cilium-test`"
+        explanation: "This option does not match the mechanism. The CLI adds a numeric suffix to the namespace given with `--test-namespace`, so the workloads run in `ats-conn-1`."
+      - id: c
+        text: "`ats-conn`"
+        explanation: "This option does not match the mechanism. The CLI adds a numeric suffix to the namespace given with `--test-namespace`, so the workloads run in `ats-conn-1`."
+      - id: d
+        text: "`ats-conn-1`"
+        explanation: "Correct. The CLI adds a numeric suffix to the namespace given with `--test-namespace`, so the workloads run in `ats-conn-1`."
+    correct_option: d
+    explanation: "The CLI adds a numeric suffix to the namespace given with `--test-namespace`, so the workloads run in `ats-conn-1`."
+
+  - id: ats056-020-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Recognise a command that does not exist"
+    source_readings:
+      - sections/section-020/module-02/course-02-selecting-and-scoping-a-run.md
+    prompt: "Which of these is not a real way to choose scenarios of the connectivity test?"
+    options:
+      - id: a
+        text: "`--test pod-to-pod`"
+        explanation: "This option does not match the mechanism. The CLI has no `connectivity list` command. Scenarios are chosen with `--test`, where a leading `!` skips a scenario."
+      - id: b
+        text: "`--test '!pod-to-pod'` to skip a scenario"
+        explanation: "This option does not match the mechanism. The CLI has no `connectivity list` command. Scenarios are chosen with `--test`, where a leading `!` skips a scenario."
+      - id: c
+        text: "`cilium connectivity list`"
+        explanation: "Correct. The CLI has no `connectivity list` command. Scenarios are chosen with `--test`, where a leading `!` skips a scenario."
+      - id: d
+        text: "`--single-node`"
+        explanation: "This option does not match the mechanism. The CLI has no `connectivity list` command. Scenarios are chosen with `--test`, where a leading `!` skips a scenario."
+    correct_option: c
+    explanation: "The CLI has no `connectivity list` command. Scenarios are chosen with `--test`, where a leading `!` skips a scenario."
+
+  - id: ats056-020-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain the flow validation modes"
+    source_readings:
+      - sections/section-020/module-02/course-03-flow-validation-and-failures.md
+    prompt: "A run passes all requests, but Hubble did not see the expected flows. What does the default `--flow-validation warning` do, and what would `strict` do?"
+    options:
+      - id: a
+        text: "Both fail the scenario."
+        explanation: "This option does not match the mechanism. The default mode warns. Strict mode fails the scenario when the observed flows do not match the expectation, which proves that the traffic went through Cilium."
+      - id: b
+        text: "`warning` skips the requests; `strict` runs them."
+        explanation: "This option does not match the mechanism. The default mode warns. Strict mode fails the scenario when the observed flows do not match the expectation, which proves that the traffic went through Cilium."
+      - id: c
+        text: "Both pass the scenario silently."
+        explanation: "This option does not match the mechanism. The default mode warns. Strict mode fails the scenario when the observed flows do not match the expectation, which proves that the traffic went through Cilium."
+      - id: d
+        text: "`warning` prints a warning and the scenario passes if the request worked; `strict` fails the scenario."
+        explanation: "Correct. The default mode warns. Strict mode fails the scenario when the observed flows do not match the expectation, which proves that the traffic went through Cilium."
+    correct_option: d
+    explanation: "The default mode warns. Strict mode fails the scenario when the observed flows do not match the expectation, which proves that the traffic went through Cilium."
+
+  - id: ats056-020-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the exit code of cilium status"
+    source_readings:
+      - sections/section-020/module-03/course-01-reading-cilium-status.md
+    prompt: "A pipeline runs `cilium status` and checks `$?`. The agents are not ready. What does the pipeline see?"
+    options:
+      - id: a
+        text: "A zero exit code only with `-o json`."
+        explanation: "This option does not match the mechanism. A plain `cilium status` prints the state and ends. With `--wait` it waits for a clean status and exits non-zero when the time runs out."
+      - id: b
+        text: "A timeout of five minutes."
+        explanation: "This option does not match the mechanism. A plain `cilium status` prints the state and ends. With `--wait` it waits for a clean status and exits non-zero when the time runs out."
+      - id: c
+        text: "A non-zero exit code, because a component is unhealthy."
+        explanation: "This option does not match the mechanism. A plain `cilium status` prints the state and ends. With `--wait` it waits for a clean status and exits non-zero when the time runs out."
+      - id: d
+        text: "A zero exit code, because a plain run fails only when it cannot collect the status. Use `--wait` for a decision."
+        explanation: "Correct. A plain `cilium status` prints the state and ends. With `--wait` it waits for a clean status and exits non-zero when the time runs out."
+    correct_option: d
+    explanation: "A plain `cilium status` prints the state and ends. With `--wait` it waits for a clean status and exits non-zero when the time runs out."
+
+  - id: ats056-020-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Repair a component with no replicas"
+    source_readings:
+      - sections/section-020/module-03/course-02-agent-status-and-workload-health.md
+    prompt: "`cilium status` shows the relay as unavailable and `kubectl get deploy hubble-relay -n kube-system` shows `0/0`. What is the right repair?"
+    options:
+      - id: a
+        text: "Delete the node."
+        explanation: "This option does not match the mechanism. A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
+      - id: b
+        text: "`kubectl -n kube-system scale deploy/hubble-relay --replicas=1`"
+        explanation: "Correct. A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
+      - id: c
+        text: "`kubectl -n kube-system scale ds/cilium --replicas=1`"
+        explanation: "This option does not match the mechanism. A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
+      - id: d
+        text: "`cilium config set hubble-relay true`"
+        explanation: "This option does not match the mechanism. A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
+    correct_option: b
+    explanation: "A Deployment scaled to zero has no pods to inspect, so set the replica count. A DaemonSet has no replica count, and the relay is a workload object, not a ConfigMap key."
+
+  - id: ats056-020-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Reach the Hubble relay from a machine"
+    source_readings:
+      - sections/section-020/module-03/course-03-hubble-relay-and-evidence.md
+    prompt: "Which command opens a local path to Hubble Relay so that the `hubble` tool can use its default address?"
+    options:
+      - id: a
+        text: "`cilium hubble port-forward`"
+        explanation: "Correct. `cilium hubble port-forward` forwards a local port, 4245 by default, and runs until you stop it."
+      - id: b
+        text: "`cilium hubble enable --ui`"
+        explanation: "This option does not match the mechanism. `cilium hubble port-forward` forwards a local port, 4245 by default, and runs until you stop it."
+      - id: c
+        text: "`cilium sysdump --quick`"
+        explanation: "This option does not match the mechanism. `cilium hubble port-forward` forwards a local port, 4245 by default, and runs until you stop it."
+      - id: d
+        text: "`cilium status --verbose`"
+        explanation: "This option does not match the mechanism. `cilium hubble port-forward` forwards a local port, 4245 by default, and runs until you stop it."
+    correct_option: a
+    explanation: "`cilium hubble port-forward` forwards a local port, 4245 by default, and runs until you stop it."

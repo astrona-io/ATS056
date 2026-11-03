@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Find And Report Unhealthy Components (LAB). Graded against the live cluster. UNTESTED: never run.
+# Find two broken components with cilium status, repair them and report the final status.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-020-03
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: operator-running
+      description: "The cilium-operator Deployment has one ready replica"
+      type: file
+      source: validation/validate-operator-running.sh
+      hint: "Run cilium status and look at the Operator line. Then check the Deployment with kubectl -n kube-system get deployment cilium-operator."
+    - name: relay-running
+      description: "The hubble-relay Deployment has one ready replica"
+      type: file
+      source: validation/validate-relay-running.sh
+      hint: "The Hubble line of cilium status shows the relay state. Check the Deployment hubble-relay in kube-system."
+    - name: status-report
+      description: "The ConfigMap status-report holds the live ready counts"
+      type: file
+      source: validation/validate-status-report.sh
+      hint: "Create the ConfigMap in starfleet with keys agents-ready, operator-ready and relay-ready after everything is ready."
+    - name: no-reinstall
+      description: "Guard: Helm revision 1 and all agents ready"
+      type: file
+      source: validation/validate-no-reinstall.sh
+      hint: "Repair the components with kubectl scale. Do not run cilium install, cilium upgrade or helm upgrade. This check passes before any action."
+
+teardown:
+  keepCluster: false

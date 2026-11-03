@@ -1,11 +1,15 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Install Cilium With The CLI (LAB). Graded against the live cluster. UNTESTED: never run.
+# Install Cilium on a cluster without a network plugin.
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-056-lab-020-01-01
+  name: ats-056-lab-020-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
@@ -15,20 +19,54 @@ runtime:
     networking:
       disableDefaultCNI: true
       podSubnet: 10.244.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: helm-release
+      description: "A Helm release named cilium with chart 1.20.3 is deployed"
+      type: file
+      source: validation/validate-helm-release.sh
+      hint: "Use cilium install with --version 1.20.3. The Cilium CLI creates a Helm release named cilium."
+    - name: agent-image
+      description: "The agent image is Cilium 1.20.3"
+      type: file
+      source: validation/validate-agent-image.sh
+      hint: "Pass --version 1.20.3 to cilium install. Pin the version explicitly: each CLI release has its own default."
+    - name: install-settings
+      description: "ipam is kubernetes, the operator has 1 replica and Hubble Relay is deployed"
+      type: file
+      source: validation/validate-install-settings.sh
+      hint: "Use --set ipam.mode=kubernetes --set operator.replicas=1 --set hubble.relay.enabled=true."
+    - name: agents-ready
+      description: "One agent is ready on every node and the operator is available"
+      type: file
+      source: validation/validate-agents-ready.sh
+      hint: "Wait with cilium status --wait until the agents and the operator are ready."
+    - name: nodes-and-dns
+      description: "All nodes are Ready and CoreDNS is available"
+      type: file
+      source: validation/validate-nodes-and-dns.sh
+      hint: "Nodes become Ready and CoreDNS starts only after the network plugin runs. Wait for it."
+    - name: single-network-plugin
+      description: "Guard: no other network plugin DaemonSet exists"
+      type: file
+      source: validation/validate-single-network-plugin.sh
+      hint: "Do not install a second network plugin. This check passes before any action."
+
+teardown:
+  keepCluster: false

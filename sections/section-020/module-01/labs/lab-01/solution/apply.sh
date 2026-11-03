@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
+# Reference solution, applied by `astrona test` only.
 set -euo pipefail
-if [[ "$(kubectl config current-context)" != "kind-astro-ats-056-lab-020-01-01" ]]; then
-  printf 'Refusing to operate on another Kubernetes context\n' >&2
-  exit 1
-fi
-lab_directory="$(cd "$(dirname "$0")/.." && pwd)"
-solution_directory="$lab_directory/solution"
-node_name="astro-ats-056-lab-020-01-01-control-plane"
-worker_name="astro-ats-056-lab-020-01-01-worker"
-
-python3 "$solution_directory/record.py"
+cilium install --version 1.20.3 --set ipam.mode=kubernetes --set operator.replicas=1 --set hubble.relay.enabled=true --wait
+cilium status --wait
+kubectl -n kube-system rollout status deployment/coredns --timeout=180s

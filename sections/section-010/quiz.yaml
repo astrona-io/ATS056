@@ -1,0 +1,242 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats056-010
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Query And Modify The Cilium Configuration"
+questions:
+  - id: ats056-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the object that holds the Cilium configuration"
+    source_readings:
+      - sections/section-010/module-01/course-01-where-the-configuration-lives.md
+    prompt: "A platform engineer wants to read the settings that every Cilium agent loads at start. Where do these settings live in a Helm installation?"
+    options:
+      - id: a
+        text: "In a custom resource named `CiliumConfig` in the `starfleet` namespace."
+        explanation: "This option does not match the mechanism. The agents read the keys of the ConfigMap `cilium-config`. Helm renders the values into that ConfigMap. The chart defines no custom resource for the configuration, and a values file on a laptop is only an input to Helm."
+      - id: b
+        text: "In the DaemonSet `cilium`, as the only place the settings are stored."
+        explanation: "This option does not match the mechanism. The agents read the keys of the ConfigMap `cilium-config`. Helm renders the values into that ConfigMap. The chart defines no custom resource for the configuration, and a values file on a laptop is only an input to Helm."
+      - id: c
+        text: "In the Helm values file on the engineer's machine."
+        explanation: "This option does not match the mechanism. The agents read the keys of the ConfigMap `cilium-config`. Helm renders the values into that ConfigMap. The chart defines no custom resource for the configuration, and a values file on a laptop is only an input to Helm."
+      - id: d
+        text: "In the ConfigMap `cilium-config` in the `kube-system` namespace."
+        explanation: "Correct. The agents read the keys of the ConfigMap `cilium-config`. Helm renders the values into that ConfigMap. The chart defines no custom resource for the configuration, and a values file on a laptop is only an input to Helm."
+    correct_option: d
+    explanation: "The agents read the keys of the ConfigMap `cilium-config`. Helm renders the values into that ConfigMap. The chart defines no custom resource for the configuration, and a values file on a laptop is only an input to Helm."
+
+  - id: ats056-010-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Map a Helm value to its configuration key"
+    source_readings:
+      - sections/section-010/module-01/course-01-where-the-configuration-lives.md
+    prompt: "A cluster was installed with the Helm value `policyEnforcementMode=never`. Which key shows this setting in the output of `cilium config view`?"
+    options:
+      - id: a
+        text: "`policy`"
+        explanation: "This option does not match the mechanism. The chart renders `policyEnforcementMode` as the key `enable-policy`. The names of values and keys do not always match, so map them before you search."
+      - id: b
+        text: "`enforcement`"
+        explanation: "This option does not match the mechanism. The chart renders `policyEnforcementMode` as the key `enable-policy`. The names of values and keys do not always match, so map them before you search."
+      - id: c
+        text: "`policy-enforcement-mode`"
+        explanation: "This option does not match the mechanism. The chart renders `policyEnforcementMode` as the key `enable-policy`. The names of values and keys do not always match, so map them before you search."
+      - id: d
+        text: "`enable-policy`"
+        explanation: "Correct. The chart renders `policyEnforcementMode` as the key `enable-policy`. The names of values and keys do not always match, so map them before you search."
+    correct_option: d
+    explanation: "The chart renders `policyEnforcementMode` as the key `enable-policy`. The names of values and keys do not always match, so map them before you search."
+
+  - id: ats056-010-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why some settings are not configuration keys"
+    source_readings:
+      - sections/section-010/module-01/course-01-where-the-configuration-lives.md
+    prompt: "A learner runs `cilium config set operator-replicas 1` and expects one operator replica. Why does this not work?"
+    options:
+      - id: a
+        text: "The command works, but only after `--restart=false` is added."
+        explanation: "This option does not match the mechanism. Replica counts belong to workload objects. They are set through Helm values or `kubectl scale`. `cilium config set` writes only keys into the ConfigMap."
+      - id: b
+        text: "The number of replicas is a field of the Deployment `cilium-operator`, not a key of the ConfigMap."
+        explanation: "Correct. Replica counts belong to workload objects. They are set through Helm values or `kubectl scale`. `cilium config set` writes only keys into the ConfigMap."
+      - id: c
+        text: "The command only accepts keys that start with `enable-`."
+        explanation: "This option does not match the mechanism. Replica counts belong to workload objects. They are set through Helm values or `kubectl scale`. `cilium config set` writes only keys into the ConfigMap."
+      - id: d
+        text: "Only the agent reads the ConfigMap, so the operator has no settings at all."
+        explanation: "This option does not match the mechanism. Replica counts belong to workload objects. They are set through Helm values or `kubectl scale`. `cilium config set` writes only keys into the ConfigMap."
+    correct_option: b
+    explanation: "Replica counts belong to workload objects. They are set through Helm values or `kubectl scale`. `cilium config set` writes only keys into the ConfigMap."
+
+  - id: ats056-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Compare the stored value with the effective state of an agent"
+    source_readings:
+      - sections/section-010/module-01/course-02-effective-state-and-features.md
+    prompt: "The ConfigMap shows `debug: \"true\"`, but one agent still logs at the normal level. Which explanation fits?"
+    options:
+      - id: a
+        text: "The ConfigMap is wrong, because it is never the source of the settings."
+        explanation: "This option does not match the mechanism. An agent reads the ConfigMap at start. A changed ConfigMap reaches an agent only after it restarts, so the stored value and the effective value can differ."
+      - id: b
+        text: "That agent was started before the change and reads the ConfigMap only when it starts."
+        explanation: "Correct. An agent reads the ConfigMap at start. A changed ConfigMap reaches an agent only after it restarts, so the stored value and the effective value can differ."
+      - id: c
+        text: "`cilium config view` always prints stale values."
+        explanation: "This option does not match the mechanism. An agent reads the ConfigMap at start. A changed ConfigMap reaches an agent only after it restarts, so the stored value and the effective value can differ."
+      - id: d
+        text: "Debug logging is disabled for every agent until Hubble is enabled."
+        explanation: "This option does not match the mechanism. An agent reads the ConfigMap at start. A changed ConfigMap reaches an agent only after it restarts, so the stored value and the effective value can differ."
+    correct_option: b
+    explanation: "An agent reads the ConfigMap at start. A changed ConfigMap reaches an agent only after it restarts, so the stored value and the effective value can differ."
+
+  - id: ats056-010-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the tool that shows an agent's effective settings"
+    source_readings:
+      - sections/section-010/module-01/course-02-effective-state-and-features.md
+    prompt: "Which command shows the settings that one running agent holds in memory?"
+    options:
+      - id: a
+        text: "`kubectl -n kube-system exec ds/cilium -- cilium-dbg config -a`"
+        explanation: "Correct. `cilium-dbg config -a`, run inside an agent pod, shows what that agent holds. `cilium config view` reads the ConfigMap, and `helm get values` shows the values of the release."
+      - id: b
+        text: "`helm get values cilium -n kube-system`"
+        explanation: "This option does not match the mechanism. `cilium-dbg config -a`, run inside an agent pod, shows what that agent holds. `cilium config view` reads the ConfigMap, and `helm get values` shows the values of the release."
+      - id: c
+        text: "`cilium version`"
+        explanation: "This option does not match the mechanism. `cilium-dbg config -a`, run inside an agent pod, shows what that agent holds. `cilium config view` reads the ConfigMap, and `helm get values` shows the values of the release."
+      - id: d
+        text: "`cilium config view`"
+        explanation: "This option does not match the mechanism. `cilium-dbg config -a`, run inside an agent pod, shows what that agent holds. `cilium config view` reads the ConfigMap, and `helm get values` shows the values of the release."
+    correct_option: a
+    explanation: "`cilium-dbg config -a`, run inside an agent pod, shows what that agent holds. `cilium config view` reads the ConfigMap, and `helm get values` shows the values of the release."
+
+  - id: ats056-010-q06
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain which cluster the Cilium CLI acts on"
+    source_readings:
+      - sections/section-010/module-01/course-03-context-permissions-and-evidence.md
+    prompt: "A learner has two clusters in their kubeconfig. Which cluster does `cilium config view` read?"
+    options:
+      - id: a
+        text: "Every cluster in the kubeconfig, one after the other."
+        explanation: "This option does not match the mechanism. The tool uses the kubeconfig and picks the current context like `kubectl`. A wrong current context is a common cause of changes to the wrong cluster."
+      - id: b
+        text: "The cluster that runs the newest Cilium version."
+        explanation: "This option does not match the mechanism. The tool uses the kubeconfig and picks the current context like `kubectl`. A wrong current context is a common cause of changes to the wrong cluster."
+      - id: c
+        text: "Always the first cluster in the kubeconfig file."
+        explanation: "This option does not match the mechanism. The tool uses the kubeconfig and picks the current context like `kubectl`. A wrong current context is a common cause of changes to the wrong cluster."
+      - id: d
+        text: "The cluster of the current context, in the same way as `kubectl`, unless a context is given."
+        explanation: "Correct. The tool uses the kubeconfig and picks the current context like `kubectl`. A wrong current context is a common cause of changes to the wrong cluster."
+    correct_option: d
+    explanation: "The tool uses the kubeconfig and picks the current context like `kubectl`. A wrong current context is a common cause of changes to the wrong cluster."
+
+  - id: ats056-010-q07
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe what cilium config set changes"
+    source_readings:
+      - sections/section-010/module-02/course-01-what-cilium-config-set-does.md
+    prompt: "A learner runs `cilium config set debug true` on a Helm installation. What did the command change?"
+    options:
+      - id: a
+        text: "The DaemonSet template, so new nodes use the key."
+        explanation: "This option does not match the mechanism. The command patches the ConfigMap `cilium-config`. It does not edit the values of the Helm release, which is why a later upgrade can disagree with the change."
+      - id: b
+        text: "The Helm release values and the ConfigMap."
+        explanation: "This option does not match the mechanism. The command patches the ConfigMap `cilium-config`. It does not edit the values of the Helm release, which is why a later upgrade can disagree with the change."
+      - id: c
+        text: "Only the ConfigMap `cilium-config`; the Helm values are unchanged."
+        explanation: "Correct. The command patches the ConfigMap `cilium-config`. It does not edit the values of the Helm release, which is why a later upgrade can disagree with the change."
+      - id: d
+        text: "Only the logs of the agent; no object changed."
+        explanation: "This option does not match the mechanism. The command patches the ConfigMap `cilium-config`. It does not edit the values of the Helm release, which is why a later upgrade can disagree with the change."
+    correct_option: c
+    explanation: "The command patches the ConfigMap `cilium-config`. It does not edit the values of the Helm release, which is why a later upgrade can disagree with the change."
+
+  - id: ats056-010-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the default restart after a configuration change"
+    source_readings:
+      - sections/section-010/module-02/course-01-what-cilium-config-set-does.md
+    prompt: "What happens by default after `cilium config set` writes the key?"
+    options:
+      - id: a
+        text: "Nothing, because the agents watch the ConfigMap and apply the key at once."
+        explanation: "This option does not match the mechanism. The option `--restart` is on by default. It deletes the agent and operator pods without waiting for the new pods, so check readiness with `cilium status --wait`."
+      - id: b
+        text: "The agent and operator pods are deleted so they restart, and the command does not wait for them to be ready."
+        explanation: "Correct. The option `--restart` is on by default. It deletes the agent and operator pods without waiting for the new pods, so check readiness with `cilium status --wait`."
+      - id: c
+        text: "The nodes are rebooted one at a time."
+        explanation: "This option does not match the mechanism. The option `--restart` is on by default. It deletes the agent and operator pods without waiting for the new pods, so check readiness with `cilium status --wait`."
+      - id: d
+        text: "The Helm release is upgraded in the background."
+        explanation: "This option does not match the mechanism. The option `--restart` is on by default. It deletes the agent and operator pods without waiting for the new pods, so check readiness with `cilium status --wait`."
+    correct_option: b
+    explanation: "The option `--restart` is on by default. It deletes the agent and operator pods without waiting for the new pods, so check readiness with `cilium status --wait`."
+
+  - id: ats056-010-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe what cilium config delete does"
+    source_readings:
+      - sections/section-010/module-02/course-02-deleting-keys-and-controlling-the-restart.md
+    prompt: "A key was added to the ConfigMap with `cilium config set`. What does `cilium config delete <key>` do?"
+    options:
+      - id: a
+        text: "It sets the key to an empty string."
+        explanation: "This option does not match the mechanism. The command removes the key from the ConfigMap with a JSON patch. The agent then falls back to its default when it restarts. The Helm values are unchanged."
+      - id: b
+        text: "It removes the key from the Helm release values."
+        explanation: "This option does not match the mechanism. The command removes the key from the ConfigMap with a JSON patch. The agent then falls back to its default when it restarts. The Helm values are unchanged."
+      - id: c
+        text: "It uninstalls the feature and deletes its pods."
+        explanation: "This option does not match the mechanism. The command removes the key from the ConfigMap with a JSON patch. The agent then falls back to its default when it restarts. The Helm values are unchanged."
+      - id: d
+        text: "It removes the key from the ConfigMap, so the agent uses its built-in default after it restarts."
+        explanation: "Correct. The command removes the key from the ConfigMap with a JSON patch. The agent then falls back to its default when it restarts. The Helm values are unchanged."
+    correct_option: d
+    explanation: "The command removes the key from the ConfigMap with a JSON patch. The agent then falls back to its default when it restarts. The Helm values are unchanged."
+
+  - id: ats056-010-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain who owns a setting after a manual change"
+    source_readings:
+      - sections/section-010/module-02/course-03-who-owns-the-setting.md
+    prompt: "A team changed `debug` with `cilium config set`. Later someone runs `helm upgrade` with the same chart and values. What can happen to the manual change?"
+    options:
+      - id: a
+        text: "It can be kept or overwritten, depending on how Helm merges the live object with the old and new chart. A lasting change belongs in the Helm values."
+        explanation: "Correct. Helm merges the old manifest, the new manifest and the live object. A manual edit of a key that the chart also renders can be kept or overwritten. Putting the setting in the Helm values makes the result certain."
+      - id: b
+        text: "It moves to the DaemonSet and stays there."
+        explanation: "This option does not match the mechanism. Helm merges the old manifest, the new manifest and the live object. A manual edit of a key that the chart also renders can be kept or overwritten. Putting the setting in the Helm values makes the result certain."
+      - id: c
+        text: "It always survives, because Helm never touches keys it did not set."
+        explanation: "This option does not match the mechanism. Helm merges the old manifest, the new manifest and the live object. A manual edit of a key that the chart also renders can be kept or overwritten. Putting the setting in the Helm values makes the result certain."
+      - id: d
+        text: "It always disappears, because Helm replaces the whole ConfigMap."
+        explanation: "This option does not match the mechanism. Helm merges the old manifest, the new manifest and the live object. A manual edit of a key that the chart also renders can be kept or overwritten. Putting the setting in the Helm values makes the result certain."
+    correct_option: a
+    explanation: "Helm merges the old manifest, the new manifest and the live object. A manual edit of a key that the chart also renders can be kept or overwritten. Putting the setting in the Helm values makes the result certain."

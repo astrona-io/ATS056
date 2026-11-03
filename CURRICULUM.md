@@ -6,12 +6,27 @@ The [official objectives](https://training.linuxfoundation.org/certification/cil
 
 | Section | Official objective | Modules |
 | --- | --- | --- |
-| 010 | Know How to Use Cilium CLI to Query and Modify the Configuration | 1 |
-| 020 | Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status | 1 |
+| 010 | Know How to Use Cilium CLI to Query and Modify the Configuration | 2 |
+| 020 | Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status | 3 |
 
-| Section / module | Module | Teaching files |
+| Section / module | Module | Parts |
 | --- | --- | --- |
-| 010 / 01 | Cilium CLI Configuration, Context And Effective State | Cilium CLI Configuration, Context And Effective State |
-| 020 / 01 | Installation Prerequisites And Connectivity Evidence | Installation Prerequisites And Connectivity Evidence |
+| 010 / 01 | Query The Cilium Configuration | Where The Configuration Lives; Effective State And Features; Context, Permissions And Evidence |
+| 010 / 02 | Modify The Cilium Configuration | What cilium config set Does; Deleting Keys And Controlling The Restart; Who Owns The Setting |
+| 020 / 01 | Install Cilium With The CLI | Prerequisites And What Gets Installed; Install Options And Values; Verify, Upgrade And Uninstall |
+| 020 / 02 | Run Cilium Connectivity Tests | What The Test Deploys And Checks; Selecting And Scoping A Run; Flow Validation And Failures |
+| 020 / 03 | Monitor The Status Of Cilium | Reading cilium status; Agent Status And Workload Health; Hubble, Relay And Evidence |
 
-AUTHORING.yaml records measurable goals and adaptation sources. Every objective retains its section ID. All technical readings remain draft. Question banks are separate from the reading manifest and follow their declared summaries. No labs, playgrounds or runtime validation are included.
+## Hands-On Coverage
+
+| Module | Playground | Lab | Lab placement |
+| --- | --- | --- | --- |
+| 010/01 Query The Cilium Configuration | ats-056-pg-010-01 | Report The Effective Cilium Configuration | after part 1 |
+| 010/02 Modify The Cilium Configuration | ats-056-pg-010-02 | Change A Cilium Setting With The CLI | after part 1 |
+| 010 capstone | none | Query And Modify The Cilium Configuration Capstone | end of section |
+| 020/01 Install Cilium With The CLI | ats-056-pg-020-01 | Install Cilium With The CLI | after part 3 |
+| 020/02 Run Cilium Connectivity Tests | ats-056-pg-020-02 | Run A Scoped Connectivity Test | after part 2 |
+| 020/03 Monitor The Status Of Cilium | ats-056-pg-020-03 | Find And Repair Stopped Cilium Components | after part 2 |
+| 020 capstone | none | Install Cilium, Test It And Monitor It Capstone | end of section |
+
+Every lab and playground is UNTESTED: static checks only (`astrona validate`, `bash -n`, YAML parsing). Live execution is pending.

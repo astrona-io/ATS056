@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
+# Reference solution, applied by `astrona test` only.
 set -euo pipefail
-if [[ "$(kubectl config current-context)" != "kind-astro-ats-056-lab-010-01-01" ]]; then
-  printf 'Refusing to operate on another Kubernetes context\n' >&2
-  exit 1
-fi
-lab_directory="$(cd "$(dirname "$0")/.." && pwd)"
-solution_directory="$lab_directory/solution"
-node_name="astro-ats-056-lab-010-01-01-control-plane"
-worker_name="astro-ats-056-lab-010-01-01-worker"
-
-python3 "$solution_directory/record.py"
+cfg() { kubectl -n kube-system get configmap cilium-config -o "jsonpath={.data.$1}"; }
+count="$(kubectl -n kube-system get pods -l k8s-app=cilium --no-headers | wc -l | tr -d ' ')"
+image="$(kubectl -n kube-system get daemonset cilium -o 'jsonpath={.spec.template.spec.containers[?(@.name=="cilium-agent")].image}')"
+tag="${image%%@*}"; tag="${tag##*:}"
+kubectl -n starfleet create configmap cilium-report \
+  --from-literal=ipam="$(cfg ipam)" \
+  --from-literal=routing-mode="$(cfg routing-mode)" \
+  --from-literal=enable-policy="$(cfg enable-policy)" \
+  --from-literal=tunnel-protocol="$(cfg tunnel-protocol)" \
+  --from-literal=agent-count="$count" \
+  --from-literal=cilium-version="${tag#v}"

@@ -3,81 +3,73 @@ draft: true
 exam_objectives:
 - Know How to Use Cilium CLI to Query and Modify the Configuration
 ---
-# Read Effective Agent Configuration Solution
+# Solution
 
-Use a host shell with the private kubeconfig for this independent kind environment. A kubeconfig identifies the cluster and credentials used by kubectl, the Kubernetes command-line tool.
+Solve this lab on `terminal`. Each step ends with `astrona submit`. The `--keep` flag keeps the lab running so you can continue after a failed check. The lab has never been run, so this walkthrough does not show command output. Read each output yourself and copy what you see.
 
-```sh
-export KUBECONFIG="$(astrona kubeconfig ats-056-lab-010-01-01)"
-test "$(kubectl config current-context)" = "kind-astro-ats-056-lab-010-01-01" || exit 1
-node_name="astro-ats-056-lab-010-01-01-control-plane"
-worker_name="astro-ats-056-lab-010-01-01-worker"
-```
-
-Keep this connection selected. Host-level commands name only this environment's node containers. They do not operate on the host operating system.
-
-## Inspect And Explain
-
-Cilium manages the private two-node cluster. Hubble Relay and the BGP control plane are enabled. The probe and two clients are healthy; no learner policy or evidence report exists. This baseline uses kube-proxy and tunnelling.
-
-Inspect the current objects before changing them:
+Start the lab if it is not running:
 
 ```sh
-kubectl -n starfleet get pods -o wide
-kubectl get nodes -o wide
+astrona run --git ssh://git@github.com/astrona-io/ATS056.git -c sections/section-010/module-01/labs/lab-01
 ```
 
-Inspect the ConfigMap used by agent Pods instead of assuming CLI defaults are current cluster state. Record exactly ipam, routing-mode and enable-policy.
+`astrona submit` right after the start shows one check that already passes. `cluster-unchanged` passes because nothing has been changed yet. It stays your guard: it fails if you change the installation.
 
-Record observations in `starfleet/evidence`, whose `report.json` contains the stated report. The verifier reads the live API again; invented values do not pass.
+## Step 1: Read the four configuration values
 
-
-Save this as `record.py`:
-
-```python
-import json,subprocess,time,sys,tempfile,os
-
-def call(*args):
- r=subprocess.run(list(args),text=True,capture_output=True,timeout=20)
- assert r.returncode==0, 'Observation command failed: '+args[0]
- return r.stdout.strip()
-def obj(kind,name,ns='starfleet'):
- return json.loads(call('kubectl',*(['-n',ns] if ns else []),'get',kind,name,'-o','json'))
-def api(path):
- script='import urllib.request; print(urllib.request.urlopen('+repr('http://prometheus:9090'+path)+',timeout=8).read().decode())'
- return json.loads(call('kubectl','-n','starfleet','exec','shuttle','--','python','-c',script))
-def save(data):
- resource={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'evidence','namespace':'starfleet'},'data':{'report.json':json.dumps(data,sort_keys=True)}}
- with tempfile.NamedTemporaryFile(mode='w',suffix='.json',delete=False) as f:json.dump(resource,f);path=f.name
- try:call('kubectl','apply','-f',path)
- finally:os.unlink(path)
-
-assert call('kubectl','config','current-context') == 'kind-astro-ats-056-lab-010-01-01'
-data=obj('configmap','cilium-config','kube-system')['data']
-report={key:data[key] for key in ('ipam','routing-mode','enable-policy')}
-save(report)
-```
-
-Apply the scoped correction:
+The Cilium agents read their settings from the ConfigMap `cilium-config` in `kube-system`. The Cilium command-line tool prints that ConfigMap as sorted keys and values:
 
 ```sh
-python3 record.py
+cilium config view
 ```
 
-## Verify The Result
-
-Observe the actual result. A denied request returns a nonzero status when the denial works, so run it separately from a shell sequence that stops on error. Status convergence and a successful request establish different parts of the result.
+Find the lines for `ipam`, `routing-mode`, `enable-policy` and `tunnel-protocol`. Write down the exact values. You can also read one key directly:
 
 ```sh
-kubectl -n starfleet get configmaps
-kubectl -n starfleet get deployment probe -o yaml
+kubectl -n kube-system get configmap cilium-config -o jsonpath='{.data.enable-policy}'
 ```
 
-Read the effective IPAM, routing and policy settings. The commands above deliberately target one environment. Keep its remaining components available so an unrelated failure cannot stand in for the required denial or correction. No example command output is presented as evidence of a completed run. A matching field alone does not establish that a process used it or that a controller reconciled it.
+The installation set `policyEnforcementMode` and `tunnelProtocol` to non-default values, so a guess from the defaults fails the check `config-values-match`.
 
-After recording your result, remove the independent lab with `astrona destroy ats-056-lab-010-01-01`.
+## Step 2: Count the agents and read the version
 
-## Common pitfalls
+One Cilium agent pod runs on each node. List them by label and count the lines:
 
-> [!WARNING]
-> Confirm the private context and exact node names before a change. Check the stated scope and live result. Do not change unrelated components to hide the original fault.
+```sh
+kubectl -n kube-system get pods -l k8s-app=cilium
+cilium version
+```
+
+`cilium version` prints the client version and the versions of the Cilium agent and operator that run in the cluster. Take the agent version and remove the leading `v`.
+
+## Step 3: Create the report
+
+Use the values you read. Replace each `<...>` with your value:
+
+```sh
+kubectl -n starfleet create configmap cilium-report \
+  --from-literal=ipam=<ipam> \
+  --from-literal=routing-mode=<routing-mode> \
+  --from-literal=enable-policy=<enable-policy> \
+  --from-literal=tunnel-protocol=<tunnel-protocol> \
+  --from-literal=agent-count=<number of agent pods> \
+  --from-literal=cilium-version=<agent version without v>
+```
+
+Submit:
+
+```sh
+astrona submit -c sections/section-010/module-01/labs/lab-01
+```
+
+All four checks pass when each value equals the live state and the installation is unchanged. If `config-values-match` fails, the message names the key and both values. Compare them character by character.
+
+## Why this works
+
+The CLI reads the cluster through the Kubernetes API, so the values come from the live ConfigMap and the live agent pods. That is why the check compares the report with the cluster at grading time and rejects a changed cluster.
+
+Remove the lab when you are done:
+
+```sh
+astrona destroy ats-056-lab-010-01
+```

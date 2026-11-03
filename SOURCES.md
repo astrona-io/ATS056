@@ -16,6 +16,9 @@
 - [Global Services](https://docs.cilium.io/en/stable/network/clustermesh/global-services/)
 - [BGP](https://docs.cilium.io/en/stable/network/bgp-control-plane/bgp-control-plane/)
 - [Egress gateway](https://docs.cilium.io/en/stable/network/egress-gateway/egress-gateway/)
+- [Cilium CLI repository](https://github.com/cilium/cilium-cli)
+- [Install with Helm](https://docs.cilium.io/en/stable/installation/k8s-install-helm/)
+- [Hubble setup](https://docs.cilium.io/en/stable/observability/hubble/setup/)
 - [Kernel verifier](https://docs.kernel.org/bpf/verifier.html)
 
 Version-specific fields and options need confirmation against the intended deployed release before adding executable material. Configuration excerpts illustrate intent and do not claim installation or runtime results. Question banks are independently authored practice, not official examination items.

@@ -29,3 +29,11 @@ ID, not display position, so a later renderer can shuffle choices safely.
 
 The banks contain answer keys and are public learning material, so this is not
 a secure examination bank. Do not treat scores as an official CCA result.
+
+## Registered Banks
+
+`sections/section-010/quiz.yaml` (10 questions), `sections/section-020/quiz.yaml` (12 questions) and `sections/final-domain-quiz.yaml` (12 questions) are registered in `astrona.yaml` as `type: quiz` entries with `pass_score: 70`. The file `assessments/domain-review.yaml` is an older bank that is no longer registered.
+
+## Hands-On Coverage
+
+See README.md for the playgrounds and labs.

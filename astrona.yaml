@@ -1,8 +1,29 @@
+# Course manifest for ATS056 - Installation and Configuration (Cilium Certified Associate).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's wrap-up page
+# comes last. The section capstone and the section quiz close the section.
+# Playgrounds are not listed: the landing page's playground marker shows
+# them. solution.md is never listed. All labs are UNTESTED: never run.
+#
+# Every `path:` is relative to this file.
+
 training:
   id: ATS056
-  title: 'CCA: Installation and Configuration'
-  description: 'Detailed reading material and reusable YAML knowledge checks for CCA:
-    Installation and Configuration. Technical content remains draft. Private playgrounds and draft independent labs are included.'
+  title: "CCA: Installation and Configuration"
+  description: >
+    Training material covering the Installation and Configuration domain of
+    the Cilium Certified Associate (CCA) exam: reading and changing the
+    configuration of a running Cilium installation with the Cilium CLI, and
+    installing Cilium, running connectivity tests and monitoring its status
+    with the same tool. Each module pairs a layered reader with an ungraded
+    hands-on playground and a graded lab. Each section closes with a
+    capstone lab and a knowledge check. Targets Kubernetes 1.35, Cilium
+    1.20.3 and Cilium CLI 0.20.2. Content is draft and the labs have not
+    been run against a live cluster.
+
   certification:
     name: Cilium Certified Associate
     code: CCA
@@ -10,103 +31,280 @@ training:
     domain: Installation and Configuration
     weight: 10
     competencies:
-    - Know How to Use Cilium CLI to Query and Modify the Configuration
-    - Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its
-      Status
+      - "Know How to Use Cilium CLI to Query and Modify the Configuration"
+      - "Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its Status"
+
 modules:
-- id: module-intro
-  title: Introduction
-  description: Audience, reading method and review process.
-  content:
-  - type: reading
-    title: Introduction
-    path: sections/intro/README.md
-  - type: reading
-    title: Welcome To The Course
-    path: sections/intro/course-01-welcome.md
-  - type: reading
-    title: Get Your Machine Ready
-    path: sections/intro/course-02-get-your-machine-ready.md
-  - type: reading
-    title: How This Course Is Made
-    path: sections/intro/course-03-how-this-course-is-made.md
-- id: module-010
-  title: Know How to Use Cilium CLI to Query and Modify the Configuration
-  description: Developed reading and reasoning for Know How to Use Cilium CLI to Query
-    and Modify the Configuration.
-  maturity: alpha
-  content:
-  - type: reading
-    title: Know How to Use Cilium CLI to Query and Modify the Configuration
-    path: sections/section-010/README.md
-  - type: reading
-    title: Cilium CLI Configuration, Context And Effective State
-    path: sections/section-010/module-01/course.md
-  - type: reading
-    title: Cilium CLI Configuration, Context And Effective State
-    path: sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
-  - type: reading
-    title: Read Effective Agent Configuration — Task
-    path: sections/section-010/module-01/labs/lab-01/question.md
-  - type: lab
-    title: Read Effective Agent Configuration
-    path: sections/section-010/module-01/labs/lab-01
-    difficulty: intermediate
-    estimated_duration: 25m
-    topic: cilium-diagnostics
-    task_kind: build
-    learning_goals:
-    - Read the effective IPAM, routing and policy settings.
-    tags:
-    - cca
-    - cilium-diagnostics
-  - type: reading
-    title: Read Effective Agent Configuration — Solution
-    path: sections/section-010/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Read Effective Agent Configuration'
-    path: sections/section-010/module-01/course-02-guided-practice.md
-  - type: reading
-    title: Summary
-    path: sections/section-010/module-01/course-03-summary.md
-- id: module-020
-  title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its
-    Status
-  description: Developed reading and reasoning for Using Cilium CLI to Install Cilium,
-    Run Connectivity Tests, and Monitor its Status.
-  maturity: alpha
-  content:
-  - type: reading
-    title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor
-      its Status
-    path: sections/section-020/README.md
-  - type: reading
-    title: Installation Prerequisites And Connectivity Evidence
-    path: sections/section-020/module-01/course.md
-  - type: reading
-    title: Installation Prerequisites And Connectivity Evidence
-    path: sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
-  - type: reading
-    title: Separate Ready Agents From Working Connectivity — Task
-    path: sections/section-020/module-01/labs/lab-01/question.md
-  - type: lab
-    title: Separate Ready Agents From Working Connectivity
-    path: sections/section-020/module-01/labs/lab-01
-    difficulty: intermediate
-    estimated_duration: 25m
-    topic: cilium-diagnostics
-    task_kind: build
-    learning_goals:
-    - Establish both deployment health and a successful service request.
-    tags:
-    - cca
-    - cilium-diagnostics
-  - type: reading
-    title: Separate Ready Agents From Working Connectivity — Solution
-    path: sections/section-020/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Separate Ready Agents From Working Connectivity'
-    path: sections/section-020/module-01/course-02-guided-practice.md
-  - type: reading
-    title: Summary
-    path: sections/section-020/module-01/course-03-summary.md
+
+  - id: module-intro
+    title: "Introduction"
+    description: >
+      Start here. What this course trains you to do, how it is laid out, how
+      to get your machine ready with the astrona command-line tool, how the
+      content is written and checked, who maintains it, and how to report a
+      mistake.
+
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: "Welcome To The Course"
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: "Get Your Machine Ready"
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: "How This Course Is Made"
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+
+  - id: module-010
+    title: "Query And Modify The Cilium Configuration"
+    description: >
+      Makes the reader able to read the configuration of a running Cilium
+      installation with the Cilium CLI, tell the stored value from the
+      effective state of an agent, and change or delete a setting while
+      knowing who owns it afterwards and what the restart does.
+
+    content:
+      - type: reading
+        title: "Section Overview"
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Query The Cilium Configuration"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "Where The Configuration Lives"
+        path: sections/section-010/module-01/course-01-where-the-configuration-lives.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Report The Effective Cilium Configuration Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: cilium-configuration
+        task_kind: troubleshooting
+        tags: [cilium-cli, cilium-config, configmap, helm-values, cilium-version]
+        learning_goals:
+          - "Read the live values of four configuration keys with cilium config view"
+          - "Report the values and the number of running agents in a ConfigMap"
+          - "Read the version of the running agent"
+        resources:
+          - name: "Cilium quick installation"
+            url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+      - type: reading
+        title: "Effective State And Features"
+        path: sections/section-010/module-01/course-02-effective-state-and-features.md
+      - type: reading
+        title: "Context, Permissions And Evidence"
+        path: sections/section-010/module-01/course-03-context-permissions-and-evidence.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Modify The Cilium Configuration"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "What cilium config set Does"
+        path: sections/section-010/module-02/course-01-what-cilium-config-set-does.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Change A Cilium Setting With The CLI Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: cilium-configuration
+        task_kind: build
+        tags: [cilium-cli, cilium-config, config-set, restart, debug]
+        learning_goals:
+          - "Turn on debug logging with cilium config set"
+          - "Wait for the restarted agents to become ready"
+          - "Confirm the change in the ConfigMap without changing the Helm values"
+        resources:
+          - name: "Cilium quick installation"
+            url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+      - type: reading
+        title: "Deleting Keys And Controlling The Restart"
+        path: sections/section-010/module-02/course-02-deleting-keys-and-controlling-the-restart.md
+      - type: reading
+        title: "Who Owns The Setting"
+        path: sections/section-010/module-02/course-03-who-owns-the-setting.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Question"
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Query And Modify The Cilium Configuration Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 30m
+        topic: cilium-configuration
+        task_kind: build
+        tags: [cilium-cli, cilium-config, config-set, monitor-aggregation, helm-release, audit]
+        learning_goals:
+          - "Report four live settings and the agent version in a ConfigMap"
+          - "Set debug and monitor-aggregation with the CLI and let the agents restart"
+          - "Leave the protected settings and the Helm release unchanged"
+        resources:
+          - name: "Cilium quick installation"
+            url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+      - type: quiz
+        title: "Knowledge Check: Query And Modify The Cilium Configuration"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
+
+  - id: module-020
+    title: "Install Cilium, Test It And Monitor It"
+    description: >
+      Makes the reader able to install a chosen Cilium version with the
+      Cilium CLI, prove that it works with the connectivity test, and
+      monitor its status, find a stopped component, enable Hubble and
+      collect a sysdump.
+
+    content:
+      - type: reading
+        title: "Section Overview"
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Install Cilium With The CLI"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "Prerequisites And What Gets Installed"
+        path: sections/section-020/module-01/course-01-prerequisites-and-what-gets-installed.md
+      - type: reading
+        title: "Install Options And Values"
+        path: sections/section-020/module-01/course-02-install-options-and-values.md
+      - type: reading
+        title: "Verify, Upgrade And Uninstall"
+        path: sections/section-020/module-01/course-03-verify-upgrade-and-uninstall.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Install Cilium With The CLI Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: cilium-install
+        task_kind: build
+        tags: [cilium-cli, cilium-install, helm-values, ipam, hubble-relay]
+        learning_goals:
+          - "Install Cilium 1.20.3 with a pinned version and chosen values"
+          - "Wait until the agents are ready and the nodes and DNS work"
+          - "Leave exactly one network plugin on the cluster"
+        resources:
+          - name: "Install Cilium with Helm"
+            url: https://docs.cilium.io/en/stable/installation/k8s-install-helm/
+          - name: "Cilium quick installation"
+            url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Run Cilium Connectivity Tests"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "What The Test Deploys And Checks"
+        path: sections/section-020/module-02/course-01-what-the-test-deploys-and-checks.md
+      - type: reading
+        title: "Selecting And Scoping A Run"
+        path: sections/section-020/module-02/course-02-selecting-and-scoping-a-run.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Run A Scoped Connectivity Test Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: cilium-connectivity
+        task_kind: build
+        tags: [cilium-cli, connectivity-test, single-node, test-namespace, pod-to-pod]
+        learning_goals:
+          - "Run one connectivity scenario on a single node"
+          - "Use a custom test namespace"
+          - "Check which test workloads exist after the run"
+        resources:
+          - name: "Cilium quick installation"
+            url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+      - type: reading
+        title: "Flow Validation And Failures"
+        path: sections/section-020/module-02/course-03-flow-validation-and-failures.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Monitor The Status Of Cilium"
+        path: sections/section-020/module-03/course.md
+      - type: reading
+        title: "Reading cilium status"
+        path: sections/section-020/module-03/course-01-reading-cilium-status.md
+      - type: reading
+        title: "Agent Status And Workload Health"
+        path: sections/section-020/module-03/course-02-agent-status-and-workload-health.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Find And Repair Stopped Cilium Components Lab"
+        path: sections/section-020/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: cilium-status
+        task_kind: troubleshooting
+        tags: [cilium-cli, cilium-status, hubble-relay, cilium-operator, kubectl-scale]
+        learning_goals:
+          - "Find stopped components with cilium status"
+          - "Bring the operator and the relay back without reinstalling"
+          - "Report the component state in a ConfigMap"
+        resources:
+          - name: "Setting up Hubble observability"
+            url: https://docs.cilium.io/en/stable/observability/hubble/setup/
+      - type: reading
+        title: "Hubble, Relay And Evidence"
+        path: sections/section-020/module-03/course-03-hubble-relay-and-evidence.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-03/course-04-summary.md
+
+      - type: reading
+        title: "Question"
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Install Cilium, Test It And Monitor It Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 45m
+        topic: cilium-install
+        task_kind: build
+        tags: [cilium-cli, cilium-install, connectivity-test, cilium-status, helm-values, hubble-relay]
+        learning_goals:
+          - "Install Cilium 1.20.3 with chosen values"
+          - "Run a scoped connectivity test with a custom namespace prefix"
+          - "Report the component state in a ConfigMap"
+        resources:
+          - name: "Install Cilium with Helm"
+            url: https://docs.cilium.io/en/stable/installation/k8s-install-helm/
+          - name: "Cilium quick installation"
+            url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+      - type: quiz
+        title: "Knowledge Check: Install Cilium, Test It And Monitor It"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Knowledge Check: Installation and Configuration"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

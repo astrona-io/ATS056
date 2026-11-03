@@ -1,11 +1,15 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Report The Effective Cilium Configuration (LAB). Graded against the live cluster. UNTESTED: never run.
+# Read the effective configuration with the Cilium CLI and report it.
 apiVersion: astrona.io/v1
 metadata:
-  name: ats-056-lab-010-01-01
+  name: ats-056-lab-010-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
@@ -15,20 +19,44 @@ runtime:
     networking:
       disableDefaultCNI: true
       podSubnet: 10.244.0.0/16
+
 bootstrap:
   init:
-  - name: seed-private-environment
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
 testing:
   init:
-  - name: reference-result
-    type: file
-    source: solution/apply.sh
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-fields-and-live-evidence
-    type: file
-    source: validate.sh
+  scripts:
+    - name: report-complete
+      description: "The ConfigMap cilium-report exists with all six keys"
+      type: file
+      source: validation/validate-report-complete.sh
+      hint: "Create the ConfigMap in the starfleet namespace with the keys ipam, routing-mode, enable-policy, tunnel-protocol, agent-count and cilium-version."
+    - name: config-values-match
+      description: "The four configuration values match the live cilium-config"
+      type: file
+      source: validation/validate-config-values-match.sh
+      hint: "Run cilium config view and copy the values of the four keys exactly as the cluster reports them."
+    - name: agent-count-and-version
+      description: "agent-count and cilium-version match the live agents"
+      type: file
+      source: validation/validate-agent-count-and-version.sh
+      hint: "Count the pods with the label k8s-app=cilium and read the agent version from cilium version. Write the version without the leading v."
+    - name: cluster-unchanged
+      description: "The installation was read and not changed"
+      type: file
+      source: validation/validate-cluster-unchanged.sh
+      hint: "This lab only reads. Do not run cilium config set, cilium upgrade or helm upgrade."
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Run A Scoped Connectivity Test (LAB). Graded against the live cluster. UNTESTED: never run.
+# Run only the pod-to-pod connectivity tests, on a single node, in a named test namespace.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: test-namespace
+      description: "The test namespace ats-conn-1 exists"
+      type: file
+      source: validation/validate-test-namespace.sh
+      hint: "Run cilium connectivity test with --test-namespace ats-conn. The CLI adds the suffix -1."
+    - name: test-workloads
+      description: "The client and echo-same-node Deployments of the test are available"
+      type: file
+      source: validation/validate-test-workloads.sh
+      hint: "The test deploys its own workloads. Let the run finish its deployment step. The workloads stay in place after the run."
+    - name: test-scope
+      description: "The run used a single node and a custom namespace"
+      type: file
+      source: validation/validate-test-scope.sh
+      hint: "Add --single-node and --test-namespace ats-conn. Do not run the default test namespace."
+    - name: cilium-still-ready
+      description: "Guard: Cilium is healthy and the release is unchanged"
+      type: file
+      source: validation/validate-cilium-still-ready.sh
+      hint: "The connectivity test must not change the installation. This check passes before any action."
+
+teardown:
+  keepCluster: false
