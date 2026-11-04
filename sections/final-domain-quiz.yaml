@@ -1,4 +1,4 @@
-# Final domain knowledge check across both sections, including the datapath settings and Helm modules.
+# Final domain knowledge check across both sections, including the datapath settings, Helm, agent debug, troubleshooting and monitor modules.
 schema_version: 1
 kind: question_bank
 id: ats056-final
@@ -378,3 +378,141 @@ questions:
         explanation: "Not correct. A repository check is done by helm repo update, not by this chart."
     correct_option: a
     explanation: "The pre-flight chart tests the new version against the existing state."
+
+  - id: ats056-final-q17
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Contrast the two config tools"
+    source_readings:
+      - sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+    prompt: "An engineer turns on debug logging in one agent with `cilium-dbg config Debug=Enable`. What is true afterwards?"
+    options:
+      - id: a
+        text: "All agents log in debug mode and the ConfigMap has a new key."
+        explanation: "Not correct. That describes `cilium config set`."
+      - id: b
+        text: "The change affects only that agent and is lost when its pod restarts."
+        explanation: "Correct. The ConfigMap is not written."
+      - id: c
+        text: "The Helm release has a new revision."
+        explanation: "Not correct. The command does not touch Helm."
+      - id: d
+        text: "The change is stored in the CiliumEndpoint object."
+        explanation: "Not correct. Endpoints do not hold agent options."
+    correct_option: b
+    explanation: "The ConfigMap is not written."
+
+  - id: ats056-final-q18
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the identity of a pod"
+    source_readings:
+      - sections/section-010/module-04/course-03-endpoints-and-identities.md
+    prompt: "Where can you read the numeric security identity of the pod `probe` in the agent of its node?"
+    options:
+      - id: a
+        text: "In the output of `cilium-dbg endpoint list` or `cilium-dbg identity list`."
+        explanation: "Correct. Both tables show identities."
+      - id: b
+        text: "In `cilium status`."
+        explanation: "Not correct. It reports workloads, not identities."
+      - id: c
+        text: "In the Helm values."
+        explanation: "Not correct. Identities are allocated at runtime, not set in values."
+      - id: d
+        text: "In `cilium config view`."
+        explanation: "Not correct. It shows ConfigMap keys."
+    correct_option: a
+    explanation: "Both tables show identities."
+
+  - id: ats056-final-q19
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Repair a bad DaemonSet change"
+    source_readings:
+      - sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+    prompt: "The agent DaemonSet was changed with `kubectl set image` to an image that does not exist, and the agents show `ImagePullBackOff`. What is the most direct repair?"
+    options:
+      - id: a
+        text: "`cilium uninstall` followed by `cilium install`."
+        explanation: "Not correct. This removes networking and is a last resort."
+      - id: b
+        text: "`kubectl delete pod` for each agent pod."
+        explanation: "Not correct. The DaemonSet recreates the pods with the same bad image."
+      - id: c
+        text: "`kubectl -n kube-system rollout undo daemonset/cilium`."
+        explanation: "Correct. It restores the previous pod template."
+      - id: d
+        text: "`cilium config delete` for the image key."
+        explanation: "Not correct. The image is not a ConfigMap key."
+    correct_option: c
+    explanation: "It restores the previous pod template."
+
+  - id: ats056-final-q20
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Know the API server values"
+    source_readings:
+      - sections/section-020/module-05/course-03-nodes-and-pods-without-network.md
+    prompt: "A cluster has no kube-proxy, and the agents never become ready because they cannot reach the API server. Which pair of values fixes the start?"
+    options:
+      - id: a
+        text: "`k8sServiceHost` and `k8sServicePort`."
+        explanation: "Correct. They give the agent the real API server address."
+      - id: b
+        text: "`kubeProxyReplacement` and `routingMode`."
+        explanation: "Not correct. They select datapath behaviour, not the API server address."
+      - id: c
+        text: "`ipam.mode` and `cluster.name`."
+        explanation: "Not correct. They set address management and the cluster name."
+      - id: d
+        text: "`debug.enabled` and `hubble.enabled`."
+        explanation: "Not correct. They turn on logging and Hubble."
+    correct_option: a
+    explanation: "They give the agent the real API server address."
+
+  - id: ats056-final-q21
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the monitor"
+    source_readings:
+      - sections/section-020/module-06/course-03-watching-events-with-cilium-dbg-monitor.md
+    prompt: "A request from `shuttle` to `probe` times out. Which command shows drops on the node of `probe` as they happen?"
+    options:
+      - id: a
+        text: "`cilium-dbg monitor -t drop` in the agent pod on the node of `shuttle`."
+        explanation: "Not correct. An ingress drop is not reported by the source node."
+      - id: b
+        text: "`cilium-dbg monitor -t drop` in the agent pod on the node of `probe`."
+        explanation: "Correct. Ingress drops are reported by the node of the destination."
+      - id: c
+        text: "`cilium status --wait`."
+        explanation: "Not correct. It shows component health, not packets."
+      - id: d
+        text: "`cilium connectivity test --cleanup`."
+        explanation: "Not correct. It removes test objects."
+    correct_option: b
+    explanation: "Ingress drops are reported by the node of the destination."
+
+  - id: ats056-final-q22
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a drop reason"
+    source_readings:
+      - sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
+    prompt: "A drop event reads \"Policy denied\" with two identity numbers. What does it tell you?"
+    options:
+      - id: a
+        text: "The two nodes cannot reach each other."
+        explanation: "Not correct. A routing fault shows a different reason."
+      - id: b
+        text: "The Cilium agent is unhealthy."
+        explanation: "Not correct. An unhealthy agent does not produce this reason."
+      - id: c
+        text: "A policy selects the pod and no rule allows the source identity, port and protocol."
+        explanation: "Correct. The reason names the check that failed."
+      - id: d
+        text: "The identity numbers are invalid."
+        explanation: "Not correct. They are valid numbers for label sets."
+    correct_option: c
+    explanation: "The reason names the check that failed."

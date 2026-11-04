@@ -1,0 +1,243 @@
+# Knowledge check for section 010 module 04. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats056-010-m04
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-04
+  title: "Inspect An Agent With cilium-dbg"
+questions:
+  - id: ats056-010-m04-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Tell the two tools apart"
+    source_readings:
+      - sections/section-010/module-04/course-01-reaching-the-agent-debug-client.md
+    prompt: "Where does the command `cilium-dbg` run?"
+    options:
+      - id: a
+        text: "Inside the agent pod, where it talks to the agent through a local socket."
+        explanation: "Correct. It is installed in the agent container, so you reach it with `kubectl exec`."
+      - id: b
+        text: "On your machine, where it calls the Kubernetes API server."
+        explanation: "Not correct. That describes the `cilium` CLI, not the debug client."
+      - id: c
+        text: "Inside the operator pod, where it manages all nodes."
+        explanation: "Not correct. The operator does not ship the agent debug client for node state."
+      - id: d
+        text: "On the Kubernetes API server node, as a kubectl plugin."
+        explanation: "Not correct. It is not a kubectl plugin and it does not run on the API server."
+    correct_option: a
+    explanation: "It is installed in the agent container, so you reach it with `kubectl exec`."
+
+  - id: ats056-010-m04-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Choose the right agent"
+    source_readings:
+      - sections/section-010/module-04/course-01-reaching-the-agent-debug-client.md
+    prompt: "You need the endpoint list of the pod `probe`. Why is `kubectl exec ds/cilium -- cilium-dbg endpoint list` a risky way to get it?"
+    options:
+      - id: a
+        text: "Because `ds/cilium` is not a valid target for `kubectl exec`."
+        explanation: "Not correct. It is valid. The problem is which pod it picks."
+      - id: b
+        text: "`kubectl` picks one agent pod, and that agent lists only the endpoints on its own node."
+        explanation: "Correct. Each agent knows only its own node, so the pod may be missing from the table."
+      - id: c
+        text: "Because `cilium-dbg` refuses to list endpoints of workload pods."
+        explanation: "Not correct. It lists workload endpoints without a problem."
+      - id: d
+        text: "Because the endpoint list needs the operator to be running."
+        explanation: "Not correct. The agent builds the list from its own state."
+    correct_option: b
+    explanation: "Each agent knows only its own node, so the pod may be missing from the table."
+
+  - id: ats056-010-m04-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the pre-1.15 client"
+    source_readings:
+      - sections/section-010/module-04/course-01-reaching-the-agent-debug-client.md
+    prompt: "What was the name of the agent debug client inside the pod before Cilium 1.15?"
+    options:
+      - id: a
+        text: "`cilium`."
+        explanation: "Correct. The old name caused confusion with the CLI, so it became `cilium-dbg`."
+      - id: b
+        text: "`cilium-agent-cli`."
+        explanation: "Not correct. No tool has this name."
+      - id: c
+        text: "`cilium-dbg`, as today."
+        explanation: "Not correct. This is the current name, used since 1.15."
+      - id: d
+        text: "`hubble`."
+        explanation: "Not correct. Hubble is a separate client for flows."
+    correct_option: a
+    explanation: "The old name caused confusion with the CLI, so it became `cilium-dbg`."
+
+  - id: ats056-010-m04-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read the brief status"
+    source_readings:
+      - sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+    prompt: "What does `cilium-dbg status --brief` give you?"
+    options:
+      - id: a
+        text: "The full list of all endpoints on the node."
+        explanation: "Not correct. The endpoint list is a different command."
+      - id: b
+        text: "The Helm values of the installation."
+        explanation: "Not correct. The agent does not read Helm values. Use `helm get values`."
+      - id: c
+        text: "A short result that says whether the agent considers itself healthy, usable in a script."
+        explanation: "Correct. The brief form is made for scripts and returns a zero exit code for a healthy agent."
+      - id: d
+        text: "The status of all agents in the cluster."
+        explanation: "Not correct. The command asks one agent only."
+    correct_option: c
+    explanation: "The brief form is made for scripts and returns a zero exit code for a healthy agent."
+
+  - id: ats056-010-m04-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Why read the agent status"
+    source_readings:
+      - sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+    prompt: "A pod of the DaemonSet `cilium` is ready in Kubernetes, but a user reports a problem on that node. What does `cilium-dbg status` add?"
+    options:
+      - id: a
+        text: "Nothing. A ready pod means every subsystem works."
+        explanation: "Not correct. A ready pod can still hide a failing controller."
+      - id: b
+        text: "The agent's own view, including failing controllers that the readiness probe does not show."
+        explanation: "Correct. `cilium status` reads the workload objects. The agent knows more about its subsystems."
+      - id: c
+        text: "The Kubernetes events of the pod."
+        explanation: "Not correct. Events come from `kubectl describe`."
+      - id: d
+        text: "The version of the Helm chart."
+        explanation: "Not correct. The chart version is in the Helm release record."
+    correct_option: b
+    explanation: "`cilium status` reads the workload objects. The agent knows more about its subsystems."
+
+  - id: ats056-010-m04-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Change a runtime option"
+    source_readings:
+      - sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+    prompt: "You run `cilium-dbg config Debug=Enable` in one agent pod. What happens?"
+    options:
+      - id: a
+        text: "The option changes at once on that agent only and returns to the stored value after a restart of the pod."
+        explanation: "Correct. The change lives in the running process. The ConfigMap and the other agents do not change."
+      - id: b
+        text: "The ConfigMap `cilium-config` changes and all agents restart."
+        explanation: "Not correct. That describes `cilium config set`."
+      - id: c
+        text: "The Helm release moves to a new revision."
+        explanation: "Not correct. The command does not touch Helm."
+      - id: d
+        text: "Nothing, because the option is read-only."
+        explanation: "Not correct. `Debug` is one of the options that can be changed at runtime."
+    correct_option: a
+    explanation: "The change lives in the running process. The ConfigMap and the other agents do not change."
+
+  - id: ats056-010-m04-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Contrast config tools"
+    source_readings:
+      - sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+    prompt: "Which command writes a key to the ConfigMap so that every agent reads it after a restart?"
+    options:
+      - id: a
+        text: "`cilium config set`."
+        explanation: "Correct. The CLI writes the ConfigMap. The debug client changes one running process."
+      - id: b
+        text: "`cilium-dbg config`."
+        explanation: "Not correct. It changes a runtime option on one agent and stores nothing."
+      - id: c
+        text: "`cilium-dbg status`."
+        explanation: "Not correct. It only reports status."
+      - id: d
+        text: "`cilium-dbg debuginfo`."
+        explanation: "Not correct. It collects a report and changes nothing."
+    correct_option: a
+    explanation: "The CLI writes the ConfigMap. The debug client changes one running process."
+
+  - id: ats056-010-m04-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Define an identity"
+    source_readings:
+      - sections/section-010/module-04/course-03-endpoints-and-identities.md
+    prompt: "What does a Cilium security identity stand for?"
+    options:
+      - id: a
+        text: "One IP address of one pod."
+        explanation: "Not correct. Identities do not depend on IP addresses."
+      - id: b
+        text: "One node of the cluster."
+        explanation: "Not correct. Nodes have their own reserved identities, but workload identities stand for label sets."
+      - id: c
+        text: "A set of labels, shared by all pods with the same security-relevant labels."
+        explanation: "Correct. Policy selects by identity, so a restarted pod with a new IP keeps its rules."
+      - id: d
+        text: "A Kubernetes ServiceAccount token."
+        explanation: "Not correct. A token is for the API. An identity is a number for a label set."
+    correct_option: c
+    explanation: "Policy selects by identity, so a restarted pod with a new IP keeps its rules."
+
+  - id: ats056-010-m04-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Compare the numbers"
+    source_readings:
+      - sections/section-010/module-04/course-03-endpoints-and-identities.md
+    prompt: "Which number is unique across the whole cluster for a label set, and which is unique only on one node?"
+    options:
+      - id: a
+        text: "Both are unique across the cluster."
+        explanation: "Not correct. The endpoint ID is local to a node."
+      - id: b
+        text: "The identity is cluster wide, and the endpoint ID is unique per node."
+        explanation: "Correct. The same labels give the same identity on every node. The endpoint ID counts per agent."
+      - id: c
+        text: "The endpoint ID is cluster wide and the identity is per node."
+        explanation: "Not correct. It is the other way around."
+      - id: d
+        text: "Both are unique only on one node."
+        explanation: "Not correct. The identity is the same on every node for the same labels."
+    correct_option: b
+    explanation: "The same labels give the same identity on every node. The endpoint ID counts per agent."
+
+  - id: ats056-010-m04-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pick the right policy view"
+    source_readings:
+      - sections/section-010/module-04/course-04-services-policy-and-debug-information.md
+    prompt: "A CiliumNetworkPolicy exists, but traffic still behaves as if no rule applied. Which command shows what the agent enforces for one endpoint?"
+    options:
+      - id: a
+        text: "`cilium-dbg bpf policy get` with the endpoint ID."
+        explanation: "Correct. It prints the policy map of that endpoint, which is what the datapath uses."
+      - id: b
+        text: "`kubectl get ciliumnetworkpolicy`."
+        explanation: "Not correct. It shows the object, not what the agent loaded."
+      - id: c
+        text: "`cilium-dbg node list`."
+        explanation: "Not correct. It lists nodes, not policy."
+      - id: d
+        text: "`cilium config view`."
+        explanation: "Not correct. It shows ConfigMap keys, not endpoint policy."
+    correct_option: a
+    explanation: "It prints the policy map of that endpoint, which is what the datapath uses."
+

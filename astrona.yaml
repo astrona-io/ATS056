@@ -182,6 +182,48 @@ modules:
         pass_score: 70
 
       - type: reading
+        title: "Inspect An Agent With cilium-dbg"
+        path: sections/section-010/module-04/course.md
+      - type: reading
+        title: "Reaching The Agent Debug Client"
+        path: sections/section-010/module-04/course-01-reaching-the-agent-debug-client.md
+      - type: reading
+        title: "Agent Status And Runtime Options"
+        path: sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+      - type: reading
+        title: "Endpoints And Identities"
+        path: sections/section-010/module-04/course-03-endpoints-and-identities.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-04/labs/lab-01/question.md
+      - type: lab
+        title: "Find The Agent, Endpoint And Identity Of A Pod Lab"
+        path: sections/section-010/module-04/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: cilium-dbg
+        task_kind: troubleshooting
+        tags: [cilium-dbg, endpoint, identity, kubectl-exec, agent]
+        learning_goals:
+          - "Find the agent pod that runs on the node of a workload"
+          - "Read the endpoint ID and the identity of a pod with cilium-dbg"
+          - "Report them in a ConfigMap without changing the installation"
+        resources:
+          - name: "Cilium troubleshooting tools"
+            url: https://docs.cilium.io/en/stable/operations/troubleshooting/
+      - type: reading
+        title: "Services, Policy And Debug Information"
+        path: sections/section-010/module-04/course-04-services-policy-and-debug-information.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-04/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Inspect An Agent With cilium-dbg"
+        path: sections/section-010/module-04/quiz.yaml
+        pass_score: 70
+
+
+      - type: reading
         title: "Question"
         path: sections/section-010/capstone/labs/lab-01/question.md
       - type: lab
@@ -360,6 +402,88 @@ modules:
       - type: quiz
         title: "Knowledge Check: Install And Upgrade Cilium With Helm"
         path: sections/section-020/module-04/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Troubleshoot A Cilium Installation"
+        path: sections/section-020/module-05/course.md
+      - type: reading
+        title: "Reading The Failure"
+        path: sections/section-020/module-05/course-01-reading-the-failure.md
+      - type: reading
+        title: "Agent Pods That Do Not Start"
+        path: sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-05/labs/lab-01/question.md
+      - type: lab
+        title: "Repair A Broken Cilium Agent Rollout Lab"
+        path: sections/section-020/module-05/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: cilium-troubleshooting
+        task_kind: troubleshooting
+        tags: [cilium-status, daemonset, rollout-undo, imagepullbackoff, events]
+        learning_goals:
+          - "Find an image pull failure from the pod events"
+          - "Undo a bad DaemonSet change without reinstalling"
+          - "Report the failing container and the ready agents"
+        resources:
+          - name: "Cilium troubleshooting"
+            url: https://docs.cilium.io/en/stable/operations/troubleshooting/
+      - type: reading
+        title: "Nodes And Pods Without Network"
+        path: sections/section-020/module-05/course-03-nodes-and-pods-without-network.md
+      - type: reading
+        title: "Fixing And Proving The Fix"
+        path: sections/section-020/module-05/course-04-fixing-and-proving-the-fix.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-05/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Troubleshoot A Cilium Installation"
+        path: sections/section-020/module-05/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Connectivity Test Flags And Monitor Output"
+        path: sections/section-020/module-06/course.md
+      - type: reading
+        title: "A Flag Reference By Purpose"
+        path: sections/section-020/module-06/course-01-a-flag-reference-by-purpose.md
+      - type: reading
+        title: "Reading The Output Of A Run"
+        path: sections/section-020/module-06/course-02-reading-the-output-of-a-run.md
+      - type: reading
+        title: "Watching Events With cilium-dbg monitor"
+        path: sections/section-020/module-06/course-03-watching-events-with-cilium-dbg-monitor.md
+      - type: reading
+        title: "Reading Drops And Policy Verdicts"
+        path: sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-06/labs/lab-01/question.md
+      - type: lab
+        title: "Find A Policy Drop With The Monitor Lab"
+        path: sections/section-020/module-06/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: cilium-monitor
+        task_kind: troubleshooting
+        tags: [cilium-dbg, monitor, drop, networkpolicy, policy-denied]
+        learning_goals:
+          - "Read a policy drop event with cilium-dbg monitor"
+          - "Report the drop reason and the blocked destination"
+          - "Remove the policy and restore the traffic"
+        resources:
+          - name: "Cilium troubleshooting tools"
+            url: https://docs.cilium.io/en/stable/operations/troubleshooting/
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-06/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Connectivity Test Flags And Monitor Output"
+        path: sections/section-020/module-06/quiz.yaml
         pass_score: 70
 
       - type: reading

@@ -1,0 +1,243 @@
+# Knowledge check for section 020 module 06. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats056-020-m06
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-06
+  title: "Connectivity Test Flags And Monitor Output"
+questions:
+  - id: ats056-020-m06-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Pick a selection flag"
+    source_readings:
+      - sections/section-020/module-06/course-01-a-flag-reference-by-purpose.md
+    prompt: "Which flag runs only the scenarios whose names match a regular expression?"
+    options:
+      - id: a
+        text: "`--test`."
+        explanation: "Correct. A value that starts with `!` skips the matches."
+      - id: b
+        text: "`--single-node`."
+        explanation: "Not correct. It limits the scope to scenarios that fit on one node."
+      - id: c
+        text: "`--timeout`."
+        explanation: "Not correct. It bounds the time of the suite."
+      - id: d
+        text: "`--cleanup`."
+        explanation: "Not correct. It removes the test objects and runs nothing."
+    correct_option: a
+    explanation: "A value that starts with `!` skips the matches."
+
+  - id: ats056-020-m06-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pick an evidence flag"
+    source_readings:
+      - sections/section-020/module-06/course-01-a-flag-reference-by-purpose.md
+    prompt: "You want the run to stop at the first failure so that you can use `kubectl exec` in the test pods. Which flag?"
+    options:
+      - id: a
+        text: "`--junit-file`."
+        explanation: "Not correct. It writes a report and does not pause."
+      - id: b
+        text: "`--pause-on-fail`."
+        explanation: "Correct. It pauses the run so that the test objects stay for inspection."
+      - id: c
+        text: "`--force-deploy`."
+        explanation: "Not correct. It redeploys the test workloads."
+      - id: d
+        text: "`--test-concurrency`."
+        explanation: "Not correct. It runs scenarios in parallel."
+    correct_option: b
+    explanation: "It pauses the run so that the test objects stay for inspection."
+
+  - id: ats056-020-m06-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Bound the time"
+    source_readings:
+      - sections/section-020/module-06/course-01-a-flag-reference-by-purpose.md
+    prompt: "Which flag should every pipeline run of the connectivity test set, so that a hung scenario ends the step?"
+    options:
+      - id: a
+        text: "`--print-flows`."
+        explanation: "Not correct. It prints flows and sets no limit."
+      - id: b
+        text: "`--external-target`."
+        explanation: "Not correct. It changes an external target."
+      - id: c
+        text: "`--timeout`."
+        explanation: "Correct. It limits the whole suite."
+      - id: d
+        text: "`--timestamp`."
+        explanation: "Not correct. It adds times to the lines."
+    correct_option: c
+    explanation: "It limits the whole suite."
+
+  - id: ats056-020-m06-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Clean up correctly"
+    source_readings:
+      - sections/section-020/module-06/course-01-a-flag-reference-by-purpose.md
+    prompt: "You ran the test with `--test-namespace ats-conn`. How do you remove its objects without running scenarios?"
+    options:
+      - id: a
+        text: "`cilium connectivity test --test-namespace ats-conn --cleanup`."
+        explanation: "Correct. Pass the same prefix so the tool removes the right namespace."
+      - id: b
+        text: "`cilium connectivity test --force-deploy`."
+        explanation: "Not correct. It redeploys and does not clean."
+      - id: c
+        text: "`cilium uninstall`."
+        explanation: "Not correct. It removes Cilium, not the test objects."
+      - id: d
+        text: "`kubectl delete node`."
+        explanation: "Not correct. It removes a node from the cluster."
+    correct_option: a
+    explanation: "Pass the same prefix so the tool removes the right namespace."
+
+  - id: ats056-020-m06-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a run"
+    source_readings:
+      - sections/section-020/module-06/course-02-reading-the-output-of-a-run.md
+    prompt: "In which phase does a failure show an environment problem, such as an image that cannot be pulled, and not a connectivity problem?"
+    options:
+      - id: a
+        text: "Deployment, before the scenarios run."
+        explanation: "Correct. The deployment phase creates the test workloads. Problems there are about images, admission or resources."
+      - id: b
+        text: "Scenarios."
+        explanation: "Not correct. Scenario failures are connectivity problems."
+      - id: c
+        text: "Summary."
+        explanation: "Not correct. The summary only counts results."
+      - id: d
+        text: "There is no such phase."
+        explanation: "Not correct. The run has preparation, deployment, scenarios and summary."
+    correct_option: a
+    explanation: "The deployment phase creates the test workloads. Problems there are about images, admission or resources."
+
+  - id: ats056-020-m06-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the exit code"
+    source_readings:
+      - sections/section-020/module-06/course-02-reading-the-output-of-a-run.md
+    prompt: "A run skipped every scenario. What is the exit code and what should you do?"
+    options:
+      - id: a
+        text: "Non-zero, so the pipeline fails."
+        explanation: "Not correct. Skips do not cause a failure."
+      - id: b
+        text: "Zero, so read the summary to see that nothing ran."
+        explanation: "Correct. Skipped scenarios do not fail a run."
+      - id: c
+        text: "Zero, which proves the network works."
+        explanation: "Not correct. Nothing was tested."
+      - id: d
+        text: "The command has no exit code."
+        explanation: "Not correct. It returns a code like any command."
+    correct_option: b
+    explanation: "Skipped scenarios do not fail a run."
+
+  - id: ats056-020-m06-q07
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Watch a node"
+    source_readings:
+      - sections/section-020/module-06/course-03-watching-events-with-cilium-dbg-monitor.md
+    prompt: "Why must you start `cilium-dbg monitor` before you repeat the failing request?"
+    options:
+      - id: a
+        text: "It prints events as they occur and shows nothing from the past."
+        explanation: "Correct. Start it first, then send the request."
+      - id: b
+        text: "Because the monitor needs the request to enable itself."
+        explanation: "Not correct. It runs without it."
+      - id: c
+        text: "Because it only works while the connectivity test runs."
+        explanation: "Not correct. It is independent of the test."
+      - id: d
+        text: "Because it writes a log that is rotated at once."
+        explanation: "Not correct. It reads events live and keeps no log."
+    correct_option: a
+    explanation: "Start it first, then send the request."
+
+  - id: ats056-020-m06-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Filter events"
+    source_readings:
+      - sections/section-020/module-06/course-03-watching-events-with-cilium-dbg-monitor.md
+    prompt: "Which options show only the drops of one pod on a busy node?"
+    options:
+      - id: a
+        text: "`-v` together with `-j`."
+        explanation: "Not correct. They change the detail and format, not the selection."
+      - id: b
+        text: "`--hex` only."
+        explanation: "Not correct. It changes how packets are printed."
+      - id: c
+        text: "`-t drop` together with `--related-to` and the endpoint ID."
+        explanation: "Correct. The type filters the event kind and `--related-to` filters the endpoint."
+      - id: d
+        text: "`-t trace` only."
+        explanation: "Not correct. It shows forwarded traffic, not drops."
+    correct_option: c
+    explanation: "The type filters the event kind and `--related-to` filters the endpoint."
+
+  - id: ats056-020-m06-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the right node"
+    source_readings:
+      - sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
+    prompt: "Ingress policy drops traffic to `probe`. On which node does the monitor report the drop?"
+    options:
+      - id: a
+        text: "On the node that runs `probe`, the destination."
+        explanation: "Correct. The datapath enforces ingress policy at the destination endpoint."
+      - id: b
+        text: "On the node that runs the source pod."
+        explanation: "Not correct. That node reports egress decisions."
+      - id: c
+        text: "On the control-plane node."
+        explanation: "Not correct. It reports only its own traffic."
+      - id: d
+        text: "On every node, in the same way."
+        explanation: "Not correct. Only the node that makes the decision reports it."
+    correct_option: a
+    explanation: "The datapath enforces ingress policy at the destination endpoint."
+
+  - id: ats056-020-m06-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Interpret a drop"
+    source_readings:
+      - sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
+    prompt: "A request times out and the monitor on the destination node shows no drop event at all. What does that suggest?"
+    options:
+      - id: a
+        text: "A policy denies the traffic."
+        explanation: "Not correct. A policy denial appears as a drop event."
+      - id: b
+        text: "The cause is probably not a Cilium policy, so look at routing, the application or the node."
+        explanation: "Correct. A policy drop would appear as a drop event with a reason."
+      - id: c
+        text: "The monitor is broken."
+        explanation: "Not correct. Check the notification options before you decide this."
+      - id: d
+        text: "The identity is wrong."
+        explanation: "Not correct. A wrong identity causes a policy drop, which would show."
+    correct_option: b
+    explanation: "A policy drop would appear as a drop event with a reason."
+

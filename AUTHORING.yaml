@@ -79,6 +79,33 @@ sections:
       objective: Report four datapath settings and set the enforcement mode to default.
       status: draft
       runtime_verification: pending
+  - id: module-04
+    title: Inspect An Agent With cilium-dbg
+    objectives:
+    - Run cilium-dbg in the agent of a chosen node.
+    - Read agent status and runtime options.
+    - Find the endpoint and identity of a pod.
+    - Read services and policy of an endpoint.
+    outline:
+    - Inspect An Agent With cilium-dbg
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-010/module-04/course-01-reaching-the-agent-debug-client.md
+      adapted_from: null
+    - reading: sections/section-010/module-04/course-02-agent-status-and-runtime-options.md
+      adapted_from: null
+    - reading: sections/section-010/module-04/course-03-endpoints-and-identities.md
+      adapted_from: null
+    - reading: sections/section-010/module-04/course-04-services-policy-and-debug-information.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-010/module-04/labs/lab-01
+      after_reading: sections/section-010/module-04/course-03-endpoints-and-identities.md
+      objective: Report the agent, endpoint ID and identity of a pod.
+      status: draft
+      runtime_verification: pending
 - id: section-020
   title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its
     Status
@@ -137,5 +164,59 @@ sections:
       path: sections/section-020/module-04/labs/lab-01
       after_reading: sections/section-020/module-04/course-02-values-and-precedence.md
       objective: Upgrade a release with reuse-values and report the revision.
+      status: draft
+      runtime_verification: pending
+  - id: module-05
+    title: Troubleshoot A Cilium Installation
+    objectives:
+    - Follow the order status, workload, pod, events, logs.
+    - Classify agent pod failures.
+    - Explain nodes without a network.
+    - Repair in the right layer and prove the repair.
+    outline:
+    - Troubleshoot A Cilium Installation
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-020/module-05/course-01-reading-the-failure.md
+      adapted_from: null
+    - reading: sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+      adapted_from: null
+    - reading: sections/section-020/module-05/course-03-nodes-and-pods-without-network.md
+      adapted_from: null
+    - reading: sections/section-020/module-05/course-04-fixing-and-proving-the-fix.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-020/module-05/labs/lab-01
+      after_reading: sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+      objective: Undo a bad DaemonSet change and report it.
+      status: draft
+      runtime_verification: pending
+  - id: module-06
+    title: Connectivity Test Flags And Monitor Output
+    objectives:
+    - Choose connectivity test flags by purpose.
+    - Read the phases and exit code of a run.
+    - Run cilium-dbg monitor with filters.
+    - Read a drop event.
+    outline:
+    - Connectivity Test Flags And Monitor Output
+    playground: true
+    module_lab: true
+    sources:
+    - reading: sections/section-020/module-06/course-01-a-flag-reference-by-purpose.md
+      adapted_from: null
+    - reading: sections/section-020/module-06/course-02-reading-the-output-of-a-run.md
+      adapted_from: null
+    - reading: sections/section-020/module-06/course-03-watching-events-with-cilium-dbg-monitor.md
+      adapted_from: null
+    - reading: sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
+      adapted_from: null
+    labs:
+    - id: lab-01
+      path: sections/section-020/module-06/labs/lab-01
+      after_reading: sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
+      objective: Read a policy drop, report it and remove the cause.
       status: draft
       runtime_verification: pending

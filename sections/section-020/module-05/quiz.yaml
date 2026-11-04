@@ -1,0 +1,243 @@
+# Knowledge check for section 020 module 05. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats056-020-m05
+course_id: ATS056
+exam_code: CCA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-05
+  title: "Troubleshoot A Cilium Installation"
+questions:
+  - id: ats056-020-m05-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Start in the right place"
+    source_readings:
+      - sections/section-020/module-05/course-01-reading-the-failure.md
+    prompt: "Pods in your application are stuck in `ContainerCreating` after an installation. Where do you start?"
+    options:
+      - id: a
+        text: "With `cilium status`, to find which Cilium component fails."
+        explanation: "Correct. Work from the outside in. The application pod shows a symptom, not the cause."
+      - id: b
+        text: "With a reinstall of Cilium."
+        explanation: "Not correct. A reinstall hides the cause and can bring it back."
+      - id: c
+        text: "With the logs of the application container."
+        explanation: "Not correct. The container has not started, so it has no logs."
+      - id: d
+        text: "With the Helm chart source."
+        explanation: "Not correct. The chart is not the first thing to read."
+    correct_option: a
+    explanation: "Work from the outside in. The application pod shows a symptom, not the cause."
+
+  - id: ats056-020-m05-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Select Cilium pods"
+    source_readings:
+      - sections/section-020/module-05/course-01-reading-the-failure.md
+    prompt: "Which label selects the Cilium agent pods?"
+    options:
+      - id: a
+        text: "`io.cilium/app=operator`."
+        explanation: "Not correct. This label selects the operator pods."
+      - id: b
+        text: "`k8s-app=hubble-relay`."
+        explanation: "Not correct. This label selects the relay pods."
+      - id: c
+        text: "`k8s-app=cilium`."
+        explanation: "Correct. Select by label. Pod names change."
+      - id: d
+        text: "`app=cilium-agent`."
+        explanation: "Not correct. The chart does not use this label for the agent."
+    correct_option: c
+    explanation: "Select by label. Pod names change."
+
+  - id: ats056-020-m05-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a crashed container"
+    source_readings:
+      - sections/section-020/module-05/course-01-reading-the-failure.md
+    prompt: "A container is in `CrashLoopBackOff` and its current log is empty. Which flag shows the output of the instance that crashed?"
+    options:
+      - id: a
+        text: "`--previous` on `kubectl logs`."
+        explanation: "Correct. It reads the logs of the previous container instance."
+      - id: b
+        text: "`--tail=0`."
+        explanation: "Not correct. It limits the output to zero lines."
+      - id: c
+        text: "`--follow`."
+        explanation: "Not correct. It streams new output and still reads the current container."
+      - id: d
+        text: "`--since=1s`."
+        explanation: "Not correct. It limits the time window of the current logs."
+    correct_option: a
+    explanation: "It reads the logs of the previous container instance."
+
+  - id: ats056-020-m05-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Classify a pod state"
+    source_readings:
+      - sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+    prompt: "The agent pod shows `ErrImagePull` and then `ImagePullBackOff`. What does this tell you?"
+    options:
+      - id: a
+        text: "The agent crashed after it started."
+        explanation: "Not correct. A crash shows as `CrashLoopBackOff`."
+      - id: b
+        text: "The container runtime on the node cannot download the image."
+        explanation: "Correct. Check the events for the image name and the registry error."
+      - id: c
+        text: "A readiness probe fails."
+        explanation: "Not correct. A failing probe shows a running pod that is not ready."
+      - id: d
+        text: "The node has a taint."
+        explanation: "Not correct. A taint causes `Pending`, not a pull error."
+    correct_option: b
+    explanation: "Check the events for the image name and the registry error."
+
+  - id: ats056-020-m05-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Spot an init failure"
+    source_readings:
+      - sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+    prompt: "A pod state reads `Init:CrashLoopBackOff`. Which container do you read the logs of?"
+    options:
+      - id: a
+        text: "The failing init container, named in the output of `kubectl describe pod`."
+        explanation: "Correct. The agent container never started, so its logs do not help."
+      - id: b
+        text: "The `cilium-agent` container."
+        explanation: "Not correct. It does not start until all init containers pass."
+      - id: c
+        text: "The operator pod."
+        explanation: "Not correct. The operator is not involved in the start of this pod."
+      - id: d
+        text: "The kubelet service on the control plane."
+        explanation: "Not correct. The pod logs name the failing init step."
+    correct_option: a
+    explanation: "The agent container never started, so its logs do not help."
+
+  - id: ats056-020-m05-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Undo a bad DaemonSet change"
+    source_readings:
+      - sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
+    prompt: "Someone ran `kubectl set image` on the agent DaemonSet and the new image does not exist. What is the direct repair?"
+    options:
+      - id: a
+        text: "Delete the agent pods one by one."
+        explanation: "Not correct. The DaemonSet recreates them with the same bad image."
+      - id: b
+        text: "Run `cilium uninstall`."
+        explanation: "Not correct. It removes networking and is a last resort."
+      - id: c
+        text: "`kubectl rollout undo daemonset/cilium` in `kube-system`."
+        explanation: "Correct. It restores the previous pod template of the DaemonSet."
+      - id: d
+        text: "Scale the DaemonSet to zero."
+        explanation: "Not correct. A DaemonSet has no replica count to scale."
+    correct_option: c
+    explanation: "It restores the previous pod template of the DaemonSet."
+
+  - id: ats056-020-m05-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain a NotReady node"
+    source_readings:
+      - sections/section-020/module-05/course-03-nodes-and-pods-without-network.md
+    prompt: "Right after the cluster is created, nodes are `NotReady` and the message says the CNI plugin is not initialized. Why?"
+    options:
+      - id: a
+        text: "The kubelet marks a node ready only after a network plugin has written its CNI configuration."
+        explanation: "Correct. Before Cilium installs and its agent runs, no configuration exists."
+      - id: b
+        text: "The API server is down."
+        explanation: "Not correct. You can still read the nodes, so the API server answers."
+      - id: c
+        text: "The nodes lack memory."
+        explanation: "Not correct. The message names the network plugin."
+      - id: d
+        text: "The operator is scaled to zero."
+        explanation: "Not correct. The node wait comes before the operator matters."
+    correct_option: a
+    explanation: "Before Cilium installs and its agent runs, no configuration exists."
+
+  - id: ats056-020-m05-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Name the API server values"
+    source_readings:
+      - sections/section-020/module-05/course-03-nodes-and-pods-without-network.md
+    prompt: "Which Helm values give the agent the real address of the API server when there is no kube-proxy?"
+    options:
+      - id: a
+        text: "`ipam.mode` and `routingMode`."
+        explanation: "Not correct. They set address management and routing."
+      - id: b
+        text: "`k8sServiceHost` and `k8sServicePort`."
+        explanation: "Correct. Without them the agent uses the `kubernetes` Service, which kube-proxy would implement."
+      - id: c
+        text: "`operator.replicas` and `debug.enabled`."
+        explanation: "Not correct. They set the operator size and debug logging."
+      - id: d
+        text: "`hubble.relay.enabled` and `hubble.ui.enabled`."
+        explanation: "Not correct. They turn Hubble components on."
+    correct_option: b
+    explanation: "Without them the agent uses the `kubernetes` Service, which kube-proxy would implement."
+
+  - id: ats056-020-m05-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Link the operator and pod start"
+    source_readings:
+      - sections/section-020/module-05/course-03-nodes-and-pods-without-network.md
+    prompt: "In cluster pool IPAM mode a new node joins while the operator is scaled to zero. What happens to pods on that node?"
+    options:
+      - id: a
+        text: "They get no address, because the operator allocates the address range of a node."
+        explanation: "Correct. In this mode the operator is part of the pod start path."
+      - id: b
+        text: "They start normally, because the agent allocates ranges itself."
+        explanation: "Not correct. In this mode the operator allocates the node range."
+      - id: c
+        text: "They use the range of the control-plane node."
+        explanation: "Not correct. Nodes do not share ranges."
+      - id: d
+        text: "Kubernetes assigns addresses and Cilium is not involved."
+        explanation: "Not correct. Cilium is the CNI and manages pod addresses."
+    correct_option: a
+    explanation: "In this mode the operator is part of the pod start path."
+
+  - id: ats056-020-m05-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Prove a repair"
+    source_readings:
+      - sections/section-020/module-05/course-04-fixing-and-proving-the-fix.md
+    prompt: "After you repair the agents, which pair of commands best proves that the repair worked?"
+    options:
+      - id: a
+        text: "`helm list` and `kubectl get ns`."
+        explanation: "Not correct. They show releases and namespaces, not health."
+      - id: b
+        text: "`cilium config view` only."
+        explanation: "Not correct. It shows settings, not health."
+      - id: c
+        text: "`cilium status --wait` and a scoped `cilium connectivity test`."
+        explanation: "Correct. The first proves the components are healthy. The second proves that pods reach each other."
+      - id: d
+        text: "`kubectl delete pod` on all pods."
+        explanation: "Not correct. This disrupts workloads and proves nothing."
+    correct_option: c
+    explanation: "The first proves the components are healthy. The second proves that pods reach each other."
+

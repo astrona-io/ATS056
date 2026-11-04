@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Repair A Broken Cilium Agent Rollout (LAB). Graded against the live cluster. UNTESTED: never run.
+# The agent DaemonSet was changed to an image that does not exist. Find the cause, undo the change and report it.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-020-05
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: agents-recovered
+      description: "All agents are ready and run the Cilium 1.20.3 image"
+      type: file
+      source: validation/validate-agents-recovered.sh
+      hint: "Look at the agent pods with kubectl -n kube-system get pods -l k8s-app=cilium and read the events. Undo the change to the DaemonSet with kubectl rollout undo."
+    - name: repair-report
+      description: "The ConfigMap repair-report holds the failing container and the ready agents"
+      type: file
+      source: validation/validate-repair-report.sh
+      hint: "Create the ConfigMap in starfleet with the keys broken-container and ready-agents after the agents are ready."
+    - name: no-reinstall
+      description: "Guard: Helm release still at revision 1"
+      type: file
+      source: validation/validate-no-reinstall.sh
+      hint: "Repair the DaemonSet with kubectl rollout undo. Do not run cilium install, cilium upgrade or helm upgrade. This check passes before any action."
+
+teardown:
+  keepCluster: false

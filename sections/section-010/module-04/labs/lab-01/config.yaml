@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Find The Agent, Endpoint And Identity Of A Pod (LAB). Graded against the live cluster. UNTESTED: never run.
+# Find the agent, the endpoint and the identity of the pod probe with cilium-dbg and report them.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-010-04
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: agent-pod-report
+      description: "The ConfigMap agent-report names the agent pod on the node of probe"
+      type: file
+      source: validation/validate-agent-pod-report.sh
+      hint: "Find the node of probe with kubectl get pods -o wide, then the pod with the label k8s-app=cilium on that node. Store its name in the key agent-pod."
+    - name: endpoint-id-report
+      description: "The ConfigMap agent-report holds the endpoint ID of probe"
+      type: file
+      source: validation/validate-endpoint-id-report.sh
+      hint: "Run cilium-dbg endpoint list in that agent and read the ENDPOINT column of the row with the label app=probe. Store it in the key endpoint-id."
+    - name: identity-report
+      description: "The ConfigMap agent-report holds the identity of probe"
+      type: file
+      source: validation/validate-identity-report.sh
+      hint: "The identity is in the same row of cilium-dbg endpoint list. Store it in the key identity-id."
+    - name: no-reinstall
+      description: "Guard: Helm revision 1 and all agents ready"
+      type: file
+      source: validation/validate-no-reinstall.sh
+      hint: "Do not reinstall or upgrade Cilium. This check passes before any action."
+
+teardown:
+  keepCluster: false

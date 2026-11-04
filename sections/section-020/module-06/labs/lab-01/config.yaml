@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Find A Policy Drop With The Monitor (LAB). Graded against the live cluster. UNTESTED: never run.
+# A NetworkPolicy blocks traffic to probe. Find the drop reason with cilium-dbg monitor, report it and remove the cause.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-056-lab-020-06
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+    networking:
+      disableDefaultCNI: true
+      podSubnet: 10.244.0.0/16
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starting state of the lab
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: drop-report
+      description: "The ConfigMap drop-report holds the drop reason and the blocked destination"
+      type: file
+      source: validation/validate-drop-report.sh
+      hint: "Run cilium-dbg monitor -t drop in the agent on the node of probe, then request probe from shuttle. Store the reason text in drop-reason and the destination app label in blocked-destination."
+    - name: policy-removed
+      description: "The NetworkPolicy probe-deny no longer exists"
+      type: file
+      source: validation/validate-policy-removed.sh
+      hint: "Find the policy with kubectl -n starfleet get networkpolicy and delete it."
+    - name: traffic-restored
+      description: "shuttle can reach probe again"
+      type: file
+      source: validation/validate-traffic-restored.sh
+      hint: "After removing the policy, curl http://probe.starfleet:9898 from the shuttle pod must return a response."
+    - name: no-reinstall
+      description: "Guard: Helm revision 1 and all agents ready"
+      type: file
+      source: validation/validate-no-reinstall.sh
+      hint: "Do not reinstall or upgrade Cilium. This check passes before any action."
+
+teardown:
+  keepCluster: false

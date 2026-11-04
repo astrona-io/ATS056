@@ -15,7 +15,7 @@ banks:
   - section-020
 - id: ats056-final
   path: sections/final-domain-quiz.yaml
-  question_count: 16
+  question_count: 22
   covered_sections:
   - section-010
   - section-020
