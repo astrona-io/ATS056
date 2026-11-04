@@ -48,7 +48,7 @@ sections:
       path: sections/section-010/module-01/labs/lab-01
       after_reading: sections/section-010/module-01/course-01-cilium-cli-configuration-context-and-effective-state.md
       objective: Read the effective IPAM, routing and policy settings.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-01/course-02-guided-practice.md
@@ -77,7 +77,7 @@ sections:
       path: sections/section-010/module-03/labs/lab-01
       after_reading: sections/section-010/module-03/course-02-routing-mode-and-tunnels.md
       objective: Report four datapath settings and set the enforcement mode to default.
-      status: draft
+      status: alpha
       runtime_verification: pending
   - id: module-04
     title: Inspect An Agent With cilium-dbg
@@ -104,7 +104,7 @@ sections:
       path: sections/section-010/module-04/labs/lab-01
       after_reading: sections/section-010/module-04/course-03-endpoints-and-identities.md
       objective: Report the agent, endpoint ID and identity of a pod.
-      status: draft
+      status: alpha
       runtime_verification: pending
 - id: section-020
   title: Using Cilium CLI to Install Cilium, Run Connectivity Tests, and Monitor its
@@ -135,7 +135,7 @@ sections:
       path: sections/section-020/module-01/labs/lab-01
       after_reading: sections/section-020/module-01/course-01-installation-prerequisites-and-connectivity-evidence.md
       objective: Establish both deployment health and a successful service request.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-01/course-02-guided-practice.md
@@ -164,7 +164,7 @@ sections:
       path: sections/section-020/module-04/labs/lab-01
       after_reading: sections/section-020/module-04/course-02-values-and-precedence.md
       objective: Upgrade a release with reuse-values and report the revision.
-      status: draft
+      status: alpha
       runtime_verification: pending
   - id: module-05
     title: Troubleshoot A Cilium Installation
@@ -191,7 +191,7 @@ sections:
       path: sections/section-020/module-05/labs/lab-01
       after_reading: sections/section-020/module-05/course-02-agent-pods-that-do-not-start.md
       objective: Undo a bad DaemonSet change and report it.
-      status: draft
+      status: alpha
       runtime_verification: pending
   - id: module-06
     title: Connectivity Test Flags And Monitor Output
@@ -218,5 +218,5 @@ sections:
       path: sections/section-020/module-06/labs/lab-01
       after_reading: sections/section-020/module-06/course-04-reading-drops-and-policy-verdicts.md
       objective: Read a policy drop, report it and remove the cause.
-      status: draft
+      status: alpha
       runtime_verification: pending
