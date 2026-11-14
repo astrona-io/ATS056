@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://astrona.io/courses/cilium-certified-associate-cca">
+    <img src="https://astrona.io/courses/cilium-certified-associate-cca/domains/ATS056.svg" alt="ATS056: Installation and Configuration, part of the Cilium Certified Associate course on Astrona" width="100%">
+  </a>
+</p>
+
 # Installation and Configuration (ATS056)
 
 Cilium Certified Associate (CCA): Installation and Configuration, worth 10% of the official curriculum. This course belongs to ATP011.
